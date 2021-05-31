@@ -1,5 +1,3 @@
-import java.awt.geom.Point2D;
-
 public class Utils {
 
     public double objective(Solution s) {

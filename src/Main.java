@@ -18,19 +18,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Hello world!");
-
-        System.out.println(coord[1][0]);
-
-        Solution s = new Solution();
-        s.list.add(new Element(1, 2, 3));
-        s.list.add(new Element(2, 4, 5));
-
-        Utils.
-
-        moy(s);
-
-
-
+        //CREER UNE MATRICE DES DISTANCES
     }
 }
