@@ -12,6 +12,10 @@ public class Center {
         this.speciality = speciality;
     }
 
+    public Pair<Integer, Integer> getCoord() {
+        return coord;
+    }
+
     public void print() {
         System.out.println(speciality + " : (" + coord.x + "," + coord.y + ")");
     }

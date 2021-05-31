@@ -18,9 +18,9 @@ public class Generator {
     private final Day[] days = Day.values();
     private final Speciality[] specialities = Speciality.values();
 
-    public List<Interface> interfaceList = new ArrayList<>();
-    public List<Center> centerList = new ArrayList<>();
-    public List<Formation> formationList = new ArrayList<>();
+    public static List<Interface> interfaceList = new ArrayList<>();
+    public static List<Center> centerList = new ArrayList<>();
+    public static List<Formation> formationList = new ArrayList<>();
 
     private final Random rand;
 
