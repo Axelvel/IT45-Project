@@ -18,13 +18,11 @@ public class Generator {
     private final Day[] days = Day.values();
     private final Speciality[] specialities = Speciality.values();
 
-    public List<Interface> interfaceList = new ArrayList<>();
-    public List<Center> centerList = new ArrayList<>();
-    public List<Formation> formationList = new ArrayList<>();
+    private List<Interface> interfaceList = new ArrayList<>();
+    private List<Center> centerList = new ArrayList<>();
+    private List<Formation> formationList = new ArrayList<>();
 
     private final Random rand;
-
-
 
     public Generator() {
         rand = new Random();
@@ -33,14 +31,17 @@ public class Generator {
         generateFormations();
     }
 
+    public List<Interface> getInterfaceList(){ return interfaceList; }
+    public List<Center> getCenterList(){return centerList;}
+    public List<Formation> getFormationList(){return formationList;}
 
-    public void generateInterfaces() {
+    private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
-            interfaceList.add(new Interface(generateCompetence(), generateSpecialites()));
+            interfaceList.add(new Interface(generateCompetence(), generateSpecialities()));
         }
     }
 
-    public int generateCompetence() {
+    private int generateCompetence() {
         double random = rand.nextDouble();
         if (random < 0.1) {
             return 2; //Les 2
@@ -51,7 +52,7 @@ public class Generator {
         }
     }
 
-    public List<Speciality> generateSpecialites() {
+    private List<Speciality> generateSpecialities() {
 
         List<Speciality> list = new ArrayList<>();
 
@@ -65,7 +66,7 @@ public class Generator {
 
 
 
-    public void generateCenters() {
+    private void generateCenters() {
 
         for (int i = 0; i <= NBR_CENTRES_FORMATION; i++) {
 
@@ -87,7 +88,7 @@ public class Generator {
         }
     }
 
-    public void generateFormations() {
+    private void generateFormations() {
 
         for (int i = 0; i < NBR_FORMATIONS; i++) {
 
@@ -119,10 +120,10 @@ public class Generator {
      * Function used to sort the formations array from
      * earlier start date/hour to the latest
      */
-    public void sortFormations(){
+    private void sortFormations(){
         //Sort by day
         //then sort by starting hour
-        System.out.println(Day.MONDAY.getId());
+        System.out.println(Day.MONDAY.getId() < Day.FRIDAY.getId());
     }
 
 
