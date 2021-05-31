@@ -16,7 +16,7 @@ public class Generator {
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
     private final Day[] days = Day.values();
-    private final Specialite[] specialites = Specialite.values();
+    private final Speciality[] specialities = Speciality.values();
 
     public List<Interface> interfaceList = new ArrayList<>();
     public List<Center> centerList = new ArrayList<>();
@@ -51,13 +51,13 @@ public class Generator {
         }
     }
 
-    public List<Specialite> generateSpecialites() {
+    public List<Speciality> generateSpecialites() {
 
-        List<Specialite> list = new ArrayList<>();
+        List<Speciality> list = new ArrayList<>();
 
         for (int i = 0; i < NBR_SPECIALITES; i++) {
             if (rand.nextDouble() < 0.2) {
-                list.add(specialites[i]);
+                list.add(specialities[i]);
             }
         }
         return list;
@@ -75,15 +75,15 @@ public class Generator {
             Pair coord = new Pair(x,y);
 
             int random;
-            Specialite specialite;
+            Speciality speciality;
 
             if (i == 0) {
-                specialite = null; //Initial center
+                speciality = null; //Initial center
             } else {
-                specialite = specialites[i-1]; //Formation centers
+                speciality = specialities[i-1]; //Formation centers
             }
 
-            centerList.add(new Center(coord, specialite));
+            centerList.add(new Center(coord, speciality));
         }
     }
 
@@ -93,7 +93,7 @@ public class Generator {
 
             int random;
 
-            Specialite specialite = specialites[rand.nextInt(NBR_SPECIALITES)];
+            Speciality speciality = specialities[rand.nextInt(NBR_SPECIALITES)];
 
             int competence = rand.nextInt(2);
 
@@ -111,7 +111,7 @@ public class Generator {
                 end = beginning + rand.nextInt(18 - beginning) + 2;
             }
 
-            formationList.add(new Formation(specialite, competence, day, beginning, end));
+            formationList.add(new Formation(speciality, competence, day, beginning, end));
         }
 
     }

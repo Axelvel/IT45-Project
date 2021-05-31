@@ -1,5 +1,5 @@
 
-public enum Specialite {
+public enum Speciality {
     MENUISERIE,
     ELECTRICITE,
     MECANIQUE,
