@@ -4,21 +4,20 @@ import java.util.List;
 
 
 public class Solution {
+    /*
+    public ArrayList<Pair<Integer, Integer>>[] array = new ArrayList[i];
 
-    public List<Element> list = new ArrayList<>();
+    public void addElement(int i, Pair<Integer, Integer> value) {
+        array[i].add(value);
+    }
 
     public boolean isValid() {
         return true;
     }
 
     public Solution() {
-
     }
 
-    public void print() {
-        this.list.forEach(value -> {
-            value.print();
-        });
-    }
+     */
 }
 
