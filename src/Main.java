@@ -12,5 +12,6 @@ public class Main {
 
         System.out.println("\nCentres : " + instance.centerList.size() + "\n");
         instance.centerList.forEach(value -> value.print());
+
     }
 }

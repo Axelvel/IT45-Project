@@ -113,7 +113,6 @@ public class Generator {
 
             formationList.add(new Formation(i,speciality, competence, day, beginning, end));
         }
-
     }
 
     /**
@@ -121,7 +120,9 @@ public class Generator {
      * earlier start date/hour to the latest
      */
     public void sortFormations(){
-
+        //Sort by day
+        //then sort by starting hour
+        System.out.println(Day.MONDAY.getId());
     }
 
 
