@@ -13,5 +13,7 @@ public class Main {
         System.out.println("\nCentres : " + instance.getCenterList().size() + "\n");
         instance.getCenterList().forEach(value -> value.print());
 
+        instance.sortFormations();
+
     }
 }

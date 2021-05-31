@@ -15,9 +15,6 @@ public class Generator {
     public static int NBR_CENTRES_FORMATION = 5;
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
-    private final Day[] days = Day.values();
-    private final Speciality[] specialities = Speciality.values();
-
     private List<Interface> interfaceList = new ArrayList<>();
     private List<Center> centerList = new ArrayList<>();
     private List<Formation> formationList = new ArrayList<>();
@@ -58,12 +55,11 @@ public class Generator {
 
         for (int i = 0; i < NBR_SPECIALITES; i++) {
             if (rand.nextDouble() < 0.2) {
-                list.add(specialities[i]);
+                list.add(Speciality.valueOfId(i));
             }
         }
         return list;
     }
-
 
 
     private void generateCenters() {
@@ -81,7 +77,7 @@ public class Generator {
             if (i == 0) {
                 speciality = null; //Initial center
             } else {
-                speciality = specialities[i-1]; //Formation centers
+                speciality = Speciality.valueOfId(i-1);
             }
 
             centerList.add(new Center(coord, speciality));
@@ -94,12 +90,12 @@ public class Generator {
 
             int random;
 
-            Speciality speciality = specialities[rand.nextInt(NBR_SPECIALITES)];
+            Speciality speciality = Speciality.valueOfId(rand.nextInt(NBR_SPECIALITES));
 
             int competence = rand.nextInt(2);
 
             random = rand.nextInt(6);
-            Day day = days[random];
+            Day day = Day.valueOfId(random);
 
             int morning = rand.nextInt(2);
             int beginning, end;
@@ -120,10 +116,10 @@ public class Generator {
      * Function used to sort the formations array from
      * earlier start date/hour to the latest
      */
-    private void sortFormations(){
+    public void sortFormations(){
         //Sort by day
         //then sort by starting hour
-        System.out.println(Day.MONDAY.getId() < Day.FRIDAY.getId());
+        System.out.println(Day.valueOfId(3));
     }
 
 
