@@ -111,8 +111,16 @@ public class Generator {
                 end = beginning + rand.nextInt(18 - beginning) + 2;
             }
 
-            formationList.add(new Formation(speciality, competence, day, beginning, end));
+            formationList.add(new Formation(i,speciality, competence, day, beginning, end));
         }
+
+    }
+
+    /**
+     * Function used to sort the formations array from
+     * earlier start date/hour to the latest
+     */
+    public void sortFormations(){
 
     }
 
