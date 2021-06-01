@@ -17,15 +17,15 @@ public class Main {
         System.out.println("\nCentres : " + instance.getCenterArray().length + "\n");
         for(int i = 0;i<instance.getCenterArray().length;i++){instance.getCenterArray()[i].print(); }
 
-        double[][] M = Utils.computeDistMatrix();
-        Utils.printMatrix(M);
-
+        System.out.println("\nDISTANCES :");
+        Utils.printMatrix(instance.getDistanceMatrix());
+        /*
         Solution solution = new Solution(3);
         solution.setAssignation(0, 2);
         solution.setAssignation(1, 1);
         solution.setAssignation(2, 2);
         solution.printAssignation();
-        solution.printSchedule(2);
+        solution.printSchedule(2);*/
 
     }
 }

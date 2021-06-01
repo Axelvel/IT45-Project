@@ -127,10 +127,39 @@ public class Solution {
         }
     }
 
-    
+    /**
+     * Compute the evaluation of a solution according to the
+     * average distance ran by an employee, the standard deviation,
+     * the average distance ran by all employees and the penalties
+     * @return eval value
+     */
+    public double evalSolution(){
+        /**
+         * min z = 0.5 ∗ (moyd(s) + ecartd(s)) + 0.5 ∗ fcorr ∗ penalite(s)
+         * avec :
+         * - moyd(s)=distance moyenne parcourue par les employés pour s
+         * - ecartd(s)=ecart type des distances des employés pour s
+         * - fcorr = facteur de corrélation = moyenne de toutes les distances =
+         * P
+         * i,j dij
+         * nbr missions
+         * - penalite(s)=nombre de spécialités non satisfaites
+         */
+        double avrDist = 0;
+        double strdDev = 0;
+        double factor = 0;
+        int penalties = 0;
+        //Pour chaque employé, calculer sa distance moyenne
+        //Moyenne de ces moyennes
+        //Ecart type de ces moyennes
+        //double[][] dist = Generator.getDistanceMatrix();
+        
+        for(int i = 0; i < assignation.length;i++){ if(!isSpecialtyValid(i)){penalties++;} }
+
+        return 3.2;
+    }
 
     public int[] getAssignationArray(){ return assignation; }
-
     public int getNbFormations(){ return nbFormations; }
 
 }
