@@ -14,9 +14,9 @@ public class Generator {
     public static int NBR_CENTRES_FORMATION = 5;
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
-    private final Interface[] interfaceArray = new Interface[NBR_INTERFACES];
-    private final Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
-    private final Formation[] formationArray = new Formation[NBR_FORMATIONS];
+    private static final Interface[] interfaceArray = new Interface[NBR_INTERFACES];
+    private static final Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
+    private static final Formation[] formationArray = new Formation[NBR_FORMATIONS];
 
     private final Random rand;
 
@@ -27,9 +27,9 @@ public class Generator {
         generateFormations();
     }
 
-    public Interface[] getInterfaceArray(){ return interfaceArray; }
-    public Center[] getCenterArray(){return centerArray;}
-    public Formation[] getFormationArray(){return formationArray;}
+    public static Interface[] getInterfaceArray(){ return interfaceArray; }
+    public static Center[] getCenterArray(){return centerArray;}
+    public static Formation[] getFormationArray(){return formationArray;}
 
     private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
