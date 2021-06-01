@@ -1,4 +1,5 @@
 
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,6 +13,19 @@ public class Main {
 
         System.out.println("\nCentres : " + instance.getCenterArray().length + "\n");
         for(int i = 0;i<instance.getCenterArray().length;i++){instance.getCenterArray()[i].print(); }
+
+        System.out.println("\nCentres : " + instance.getCenterArray().length + "\n");
+        for(int i = 0;i<instance.getCenterArray().length;i++){instance.getCenterArray()[i].print(); }
+
+        double[][] M = Utils.computeDistMatrix();
+        Utils.printMatrix(M);
+
+        Solution solution = new Solution(3);
+        solution.setAssignation(0, 2);
+        solution.setAssignation(1, 1);
+        solution.setAssignation(2, 2);
+        solution.printAssignation();
+        solution.printSchedule(2);
 
     }
 }

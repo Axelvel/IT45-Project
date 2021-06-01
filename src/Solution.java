@@ -41,6 +41,61 @@ public class Solution {
     }
 
     /**
+     * Checks if the interface assigned to the formation has the right skill
+     * @param f : formation id
+     */
+    public boolean isSkillValid(int f) {
+        int id = this.getAssignation(f);
+        int skill = Generator.getFormationArray()[f].getSkill();
+
+        if (Generator.getInterfaceArray()[id].getSkill() == skill) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the interface assigned to the formation has the right specialty
+     * @param f : formation id
+     */
+    public boolean isSpecialtyValid(int f) {
+        int id = this.getAssignation(f);
+        Speciality spe = Generator.getFormationArray()[f].getSpeciality();
+
+        if (Generator.getInterfaceArray()[id].getSpecialities().contains(spe)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the generated schedule for the interface is valid
+     * @param i : interface id
+     */
+    public boolean isScheduleValid(int i) {
+
+        return true;
+    }
+
+    /**
+     * Returns the indexes of the formations assigned to an interface
+     * @param i : interface id
+     * @return list of indexes
+     */
+    public List<Integer> getInterfaceIndexes(int i) {
+        List<Integer> indexList = new ArrayList<>();
+        for (int j= 0; j < assignation.length; j++) {
+            if (assignation[j] == i) {
+                indexList.add(j);
+            }
+        }
+        return indexList;
+    }
+
+
+    /**
      * Print the content of the assignation array
      */
     public void printAssignation(){
@@ -50,7 +105,7 @@ public class Solution {
     }
 
     /**
-     * Print neatly the schedule of an interface
+     * Neatly prints the schedule of an interface
      * @param i : interface id
      */
     public void printSchedule(int i){
@@ -58,10 +113,25 @@ public class Solution {
             //ajouter dans une liste l'index des formations correspondantes
             //récupérer les infos de chaque formation
             //Former un emploi du temps avec les horaires de chaque formation
+
+        List<Integer> indexList = getInterfaceIndexes(i);
+
+        for (int j = 0; j < indexList.size(); j++) {
+            int n = indexList.get(j);
+            Formation formation = Generator.getFormationArray()[n];
+            int id = Generator.getFormationArray()[n].getId();
+            Day day = formation.getDay();
+            int start = formation.getStartHour();
+            int end = formation.getEndHour();
+            System.out.println(id + ": " + day + ", " + start + "-" + end);
+        }
     }
+
+    
 
     public int[] getAssignationArray(){ return assignation; }
 
     public int getNbFormations(){ return nbFormations; }
+
 }
 
