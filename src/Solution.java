@@ -81,39 +81,43 @@ public class Solution {
         int startday = schedule.get(0).getStartHour();
         int endDay;
 
-        for (int j = 0; j + 1 < schedule.size(); j++) {
+
+        for (int j = 0; j < schedule.size(); j++) {
+
 
             hours += (schedule.get(j).getEndHour() - schedule.get(j).getStartHour());
 
-            if (schedule.get(j).getDay() == schedule.get(j+1).getDay()) {
-                if (schedule.get(j).getEndHour() > schedule.get(j+1).getStartHour()) {
-                    System.out.println("Pas compatible");
-                    return false;
+            if (j != 0) {
+                if (schedule.get(j).getDay() == schedule.get(j-1).getDay()) {
+                    if (schedule.get(j-1).getEndHour() > schedule.get(j).getStartHour()) {
+                        System.out.println(j);
+                        System.out.println("Pas compatible");
+                        return false;
+                    } else {
+                        endDay = schedule.get(j).getEndHour();
+
+                        if (endDay - startday >= 12) {
+                            System.out.println("Amplitude horraire journée dépassée");
+                            return false;
+                        }
+
+                        if (hours >= 35) {
+                            System.out.println("+35 heures semaine");
+                            return false;
+                        }
+
+                        if (schedule.get(j).getStartHour() > 12 && (schedule.get(j).getStartHour() - schedule.get(j-1).getEndHour()) < 1) {
+                            System.out.println("Bouffe");
+                            return false;
+                        }
+                    }
                 } else {
-                    System.out.println(hours+ " " + j); //Fix  that
-
-                    endDay = schedule.get(j).getEndHour();
-
-                    if (endDay - startday >= 12) {
-                        System.out.println("Amplitude horraire journée dépassée");
-                        return false;
-                    }
-
-                    if (hours >= 35) {
-                        System.out.println("+35 heures semaine");
-                        return false;
-                    }
-
-                    if (schedule.get(j).getStartHour() > 12 && (schedule.get(j).getStartHour() - schedule.get(j-1).getEndHour()) < 1) {
-                        System.out.println("Bouffe");
-                        return false;
-                    }
+                    startday = schedule.get(j).getStartHour();
                 }
-            } else {
-                startday = schedule.get(j).getStartHour();
             }
+
         }
-        //System.out.println("hours " + hours);
+        System.out.println("Hours : " + hours);
         return true;
     }
 
