@@ -1,5 +1,6 @@
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Generator {
 
@@ -13,9 +14,9 @@ public class Generator {
     public static int NBR_CENTRES_FORMATION = 5;
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
-    private Interface[] interfaceArray = new Interface[NBR_INTERFACES];
-    private Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
-    private Formation[] formationArray = new Formation[NBR_FORMATIONS];
+    private final Interface[] interfaceArray = new Interface[NBR_INTERFACES];
+    private final Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
+    private final Formation[] formationArray = new Formation[NBR_FORMATIONS];
 
     private final Random rand;
 
@@ -112,13 +113,10 @@ public class Generator {
     /**
      * Function used to sort the formations array according
      * to day and start day
+     * Used two comparators in order to user
+     * the Arrays.sort() method
      */
     public void sortFormations(){
-        /**
-         * Comparator needed in order to sort the array using
-         * the Arrays.sort() method
-         * Sort formation according to the day ascending id
-         */
         class SortByDay implements Comparator<Formation>
         {
             public int compare(Formation a, Formation b)
@@ -127,11 +125,6 @@ public class Generator {
             }
         }
 
-        /**
-         * Comparator needed in order to sort the array using
-         * the Arrays.sort() method
-         * Sort formation according to the start hour
-         */
         class SortByHour implements Comparator<Formation>
         {
             public int compare(Formation a, Formation b)
