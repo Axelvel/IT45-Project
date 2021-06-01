@@ -4,14 +4,14 @@ public class Main {
     public static void main(String[] args) {
 
         Generator instance = new Generator();
-        System.out.println("\nFormations : " + instance.getFormationList().size() + "\n");
-        instance.getFormationList().forEach(value -> value.print());
+        System.out.println("\nFormations : " + instance.getFormationArray().length + "\n");
+        for(int i = 0;i<instance.getFormationArray().length;i++){ instance.getFormationArray()[i].print(); }
 
-        System.out.println("\nInterfaces : " + instance.getInterfaceList().size() + "\n");
-        instance.getInterfaceList().forEach(value -> value.print());
+        System.out.println("\nInterfaces : " + instance.getInterfaceArray().length + "\n");
+        for(int i = 0;i<instance.getInterfaceArray().length;i++){ instance.getInterfaceArray()[i].print(); }
 
-        System.out.println("\nCentres : " + instance.getCenterList().size() + "\n");
-        instance.getCenterList().forEach(value -> value.print());
+        System.out.println("\nCentres : " + instance.getCenterArray().length + "\n");
+        for(int i = 0;i<instance.getCenterArray().length;i++){instance.getCenterArray()[i].print(); }
 
     }
 }
