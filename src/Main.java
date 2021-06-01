@@ -21,10 +21,16 @@ public class Main {
         Utils.printMatrix(instance.getDistanceMatrix());
         /*
         Solution solution = new Solution(3);
+
         solution.setAssignation(0, 2);
-        solution.setAssignation(1, 1);
-        solution.setAssignation(2, 2);
+        //solution.setAssignation(1, 1);
+       // solution.setAssignation(6, 2);
+        solution.setAssignation(8, 2);
+        solution.setAssignation(15, 2);
+        solution.setAssignation(24, 2);
+        //solution.setAssignation(6, 2);
         solution.printAssignation();
+
         solution.printSchedule(2);*/
 
     }
