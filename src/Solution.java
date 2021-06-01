@@ -46,9 +46,9 @@ public class Solution {
      */
     public boolean isSkillValid(int f) {
         int id = this.getAssignation(f);
-        int skill = Generator.getFormationList().get(f).getSkill();
+        int skill = Generator.getFormationArray()[f].getSkill();
 
-        if (Generator.getInterfaceList().get(id).getSkill() == skill) {
+        if (Generator.getInterfaceArray()[id].getSkill() == skill) {
             return true;
         } else {
             return false;
@@ -61,9 +61,9 @@ public class Solution {
      */
     public boolean isSpecialtyValid(int f) {
         int id = this.getAssignation(f);
-        Speciality spe = Generator.getFormationList().get(f).getSpeciality();
+        Speciality spe = Generator.getFormationArray()[f].getSpeciality();
 
-        if (Generator.getInterfaceList().get(id).getSpecialities().contains(spe)) {
+        if (Generator.getInterfaceArray()[id].getSpecialities().contains(spe)) {
             return true;
         } else {
             return false;
@@ -75,6 +75,7 @@ public class Solution {
      * @param i : interface id
      */
     public boolean isScheduleValid(int i) {
+
         return true;
     }
 
@@ -117,13 +118,16 @@ public class Solution {
 
         for (int j = 0; j < indexList.size(); j++) {
             int n = indexList.get(j);
-            Formation formation = Generator.getFormationList().get(n);
+            Formation formation = Generator.getFormationArray()[n];
+            int id = Generator.getFormationArray()[n].getId();
             Day day = formation.getDay();
             int start = formation.getStartHour();
             int end = formation.getEndHour();
-            System.out.println(n + ": " + day + ", " + start + "-" + end);
+            System.out.println(id + ": " + day + ", " + start + "-" + end);
         }
     }
+
+    
 
     public int[] getAssignationArray(){ return assignation; }
 

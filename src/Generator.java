@@ -1,7 +1,6 @@
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class Generator {
 
@@ -15,12 +14,9 @@ public class Generator {
     public static int NBR_CENTRES_FORMATION = 5;
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
-    private final Day[] days = Day.values();
-    private final Speciality[] specialities = Speciality.values();
-
-    private static List<Interface> interfaceList = new ArrayList<>();
-    private static List<Center> centerList = new ArrayList<>();
-    private static List<Formation> formationList = new ArrayList<>();
+    private static final Interface[] interfaceArray = new Interface[NBR_INTERFACES];
+    private static final Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
+    private static final Formation[] formationArray = new Formation[NBR_FORMATIONS];
 
     private final Random rand;
 
@@ -31,13 +27,14 @@ public class Generator {
         generateFormations();
     }
 
-    public static List<Interface> getInterfaceList(){ return interfaceList; }
-    public static List<Center> getCenterList(){return centerList;}
-    public static List<Formation> getFormationList(){return formationList;}
+    public static Interface[] getInterfaceArray(){ return interfaceArray; }
+    public static Center[] getCenterArray(){return centerArray;}
+    public static Formation[] getFormationArray(){return formationArray;}
+
 
     private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
-            interfaceList.add(new Interface(generateCompetence(), generateSpecialities()));
+            interfaceArray[i] = new Interface(generateCompetence(), generateSpecialities());
         }
     }
 
@@ -58,12 +55,11 @@ public class Generator {
 
         for (int i = 0; i < NBR_SPECIALITES; i++) {
             if (rand.nextDouble() < 0.2) {
-                list.add(specialities[i]);
+                list.add(Speciality.valueOfId(i));
             }
         }
         return list;
     }
-
 
 
     private void generateCenters() {
@@ -75,16 +71,14 @@ public class Generator {
             int y = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
             Pair coord = new Pair(x,y);
 
-            int random;
             Speciality speciality;
 
             if (i == 0) {
                 speciality = null; //Initial center
             } else {
-                speciality = specialities[i-1]; //Formation centers
+                speciality = Speciality.valueOfId(i-1);
             }
-
-            centerList.add(new Center(coord, speciality));
+            centerArray[i] = new Center(coord, speciality);
         }
     }
 
@@ -94,12 +88,12 @@ public class Generator {
 
             int random;
 
-            Speciality speciality = specialities[rand.nextInt(NBR_SPECIALITES)];
+            Speciality speciality = Speciality.valueOfId(rand.nextInt(NBR_SPECIALITES));
 
             int competence = rand.nextInt(2);
 
             random = rand.nextInt(6);
-            Day day = days[random];
+            Day day = Day.valueOfId(random);
 
             int morning = rand.nextInt(2);
             int beginning, end;
@@ -112,19 +106,36 @@ public class Generator {
                 end = beginning + rand.nextInt(18 - beginning) + 2;
             }
 
-            formationList.add(new Formation(i,speciality, competence, day, beginning, end));
+            formationArray[i] = new Formation(i,speciality, competence, day, beginning, end);
         }
+        sortFormations();
     }
 
     /**
-     * Function used to sort the formations array from
-     * earlier start date/hour to the latest
+     * Function used to sort the formations array according
+     * to day and start day
+     * Used two comparators in order to user
+     * the Arrays.sort() method
      */
-    private void sortFormations(){
-        //Sort by day
-        //then sort by starting hour
-        System.out.println(Day.MONDAY.getId() < Day.FRIDAY.getId());
-    }
+    public void sortFormations(){
+        class SortByDay implements Comparator<Formation>
+        {
+            public int compare(Formation a, Formation b)
+            {
+                return a.getDay().getId() - b.getDay().getId();
+            }
+        }
 
+        class SortByHour implements Comparator<Formation>
+        {
+            public int compare(Formation a, Formation b)
+            {
+                if(a.getDay() == b.getDay()){ return a.getStartHour() - b.getStartHour(); } else{ return 0; }
+            }
+        }
+
+        Arrays.sort(formationArray, new SortByDay());
+        Arrays.sort(formationArray, new SortByHour());
+    }
 
 }

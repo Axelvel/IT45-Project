@@ -22,9 +22,10 @@ public class Formation {
     }
 
     public void print() {
-        System.out.println(speciality + ", " + skill + ", " + day + ", " + start + ", " + end);
+        System.out.println(id + "," + speciality + ", " + skill + ", " + day + ", " + start + ", " + end);
     }
 
+    public int getId() { return id; }
     public Speciality getSpeciality(){ return speciality; }
     public int getSkill(){ return skill; }
     public Day getDay(){ return day; }
