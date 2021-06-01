@@ -1,4 +1,5 @@
 
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,5 +14,8 @@ public class Main {
 
         System.out.println("\nCentres : " + instance.centerList.size() + "\n");
         instance.centerList.forEach(value -> value.print());
+
+        double[][] M = Utils.computeDistMatrix();
+        Utils.printMatrix(M);
     }
 }
