@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Solution {
 
-    private int nbFormations;
+    private final int nbFormations;
     private int[] assignation;
 
     public Solution(int nbFormations){
@@ -75,7 +75,7 @@ public class Solution {
      * @param i : interface id
      */
     public boolean isScheduleValid(int i) {
-        List<Formation> schedule = printSchedule(i);
+        List<Formation> schedule = generateSchedule(i);
 
         int hours = 0;
 
@@ -126,23 +126,13 @@ public class Solution {
      * Neatly prints the schedule of an interface
      * @param i : interface id
      */
-    public List<Formation> printSchedule(int i){
-        //pour chaque interface
-            //ajouter dans une liste l'index des formations correspondantes
-            //récupérer les infos de chaque formation
-            //Former un emploi du temps avec les horaires de chaque formation
-
+    public List<Formation> generateSchedule(int i){
         List<Integer> indexList = getInterfaceIndexes(i);
         List<Formation> schedule = new ArrayList<>();
 
         for (int j = 0; j < indexList.size(); j++) {
             int n = indexList.get(j);
             Formation formation = Generator.getFormationArray()[n];
-            int id = Generator.getFormationArray()[n].getId();
-            Day day = formation.getDay();
-            int start = formation.getStartHour();
-            int end = formation.getEndHour();
-            System.out.println(id + ": " + day + ", " + start + "-" + end);
             schedule.add(formation);
         }
 
@@ -156,29 +146,36 @@ public class Solution {
      * @return eval value
      */
     public double evalSolution(){
-        /**
-         * min z = 0.5 ∗ (moyd(s) + ecartd(s)) + 0.5 ∗ fcorr ∗ penalite(s)
-         * avec :
-         * - moyd(s)=distance moyenne parcourue par les employés pour s
-         * - ecartd(s)=ecart type des distances des employés pour s
-         * - fcorr = facteur de corrélation = moyenne de toutes les distances =
-         * P
-         * i,j dij
-         * nbr missions
-         * - penalite(s)=nombre de spécialités non satisfaites
-         */
-        double avrDist = 0;
-        double strdDev = 0;
-        double factor = 0;
         int penalties = 0;
-        //Pour chaque employé, calculer sa distance moyenne
-        //Moyenne de ces moyennes
-        //Ecart type de ces moyennes
-        //double[][] dist = Generator.getDistanceMatrix();
-        
+        double totalDist = 0;
+        double[] distByInterface = new double[Generator.NBR_INTERFACES];
+
+        //Compute penalties
         for(int i = 0; i < assignation.length;i++){ if(!isSpecialtyValid(i)){penalties++;} }
 
-        return 3.2;
+        //Compute total distance ran by an interface and total distance ran by all interfaces
+        for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+            distByInterface[i] = 0;
+            List<Formation> schedule = generateSchedule(i);
+            Center prevCenter = Generator.getCenterArray()[0];
+            for(Formation f : schedule){
+                Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                distByInterface[i] += Utils.calculateDist(prevCenter,currentCenter);
+                prevCenter = currentCenter;
+            }
+            distByInterface[i] += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
+            totalDist += distByInterface[i];
+        }
+
+        double avrDist = totalDist/Generator.NBR_INTERFACES;
+        double factor = totalDist/Generator.NBR_FORMATIONS;
+        double strdDev;
+        double varDist = 0;
+
+        for(double dist: distByInterface){varDist += Math.pow(avrDist-dist,2); }
+        strdDev = Math.sqrt(varDist/Generator.NBR_INTERFACES);
+
+        return 0.5 * (avrDist + strdDev) + 0.5 * factor * penalties;
     }
 
     public int[] getAssignationArray(){ return assignation; }

@@ -11,13 +11,8 @@ public final class Utils {
                 Center ca = Generator.getCenterArray()[i];
                 Center cb = Generator.getCenterArray()[j];;
 
-                int x1 = ca.getCoord().x;
-                int y1 = ca.getCoord().y;
-                int x2 = cb.getCoord().x;
-                int y2 = cb.getCoord().y;
-
                 if (ca != cb) {
-                    M[i][j] = calculateDist(x1, y1, x2, y2);
+                    M[i][j] = calculateDist(ca,cb);
                 } else {
                     /*Center ci = Generator.getCenterArray()[0];
                     M[i][j] = calculateDist(ci.getCoord().x, ci.getCoord().y, x2, y2);*/
@@ -31,7 +26,12 @@ public final class Utils {
         return M;
     }
 
-    public static double calculateDist(int x1, int y1, int x2, int y2) {
+    public static double calculateDist(Center ca, Center cb) {
+        int x1 = ca.getCoord().x;
+        int y1 = ca.getCoord().y;
+        int x2 = cb.getCoord().x;
+        int y2 = cb.getCoord().y;
+
         return Math.sqrt(Math.pow(Math.abs(x1 - x2), 2)+ Math.pow(Math.abs(y1 - y2), 2));
     }
 

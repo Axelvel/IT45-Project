@@ -34,6 +34,7 @@ public class Generator {
     public static Center[] getCenterArray(){return centerArray;}
     public static Formation[] getFormationArray(){return formationArray;}
     public static double[][] getDistanceMatrix(){return distanceMatrix;}
+    public static Center getCenterBySpeciality(int i){return centerArray[i];}
 
     private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
