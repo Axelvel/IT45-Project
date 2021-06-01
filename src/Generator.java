@@ -1,7 +1,5 @@
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class Generator {
 
@@ -108,17 +106,42 @@ public class Generator {
 
             formationArray[i] = new Formation(i,speciality, competence, day, beginning, end);
         }
+        sortFormations();
     }
 
     /**
-     * Function used to sort the formations array from
-     * earlier start date/hour to the latest
+     * Function used to sort the formations array according
+     * to day and start day
      */
     public void sortFormations(){
-        //Sort by day
-        //then sort by starting hour
-        System.out.println(Day.valueOfId(3));
-    }
+        /**
+         * Comparator needed in order to sort the array using
+         * the Arrays.sort() method
+         * Sort formation according to the day ascending id
+         */
+        class SortByDay implements Comparator<Formation>
+        {
+            public int compare(Formation a, Formation b)
+            {
+                return a.getDay().getId() - b.getDay().getId();
+            }
+        }
 
+        /**
+         * Comparator needed in order to sort the array using
+         * the Arrays.sort() method
+         * Sort formation according to the start hour
+         */
+        class SortByHour implements Comparator<Formation>
+        {
+            public int compare(Formation a, Formation b)
+            {
+                if(a.getDay() == b.getDay()){ return a.getStartHour() - b.getStartHour(); } else{ return 0; }
+            }
+        }
+
+        Arrays.sort(formationArray, new SortByDay());
+        Arrays.sort(formationArray, new SortByHour());
+    }
 
 }
