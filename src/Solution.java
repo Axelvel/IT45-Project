@@ -75,7 +75,25 @@ public class Solution {
      * @param i : interface id
      */
     public boolean isScheduleValid(int i) {
+        List<Formation> schedule = printSchedule(i);
 
+        int hours = 0;
+
+        for (int j = 0; j + 1 < schedule.size(); j++) {
+            if (schedule.get(j).getEndHour() > schedule.get(j+1).getStartHour()) {
+                return false;
+            } else {
+                hours += schedule.get(j).getEndHour() - schedule.get(j).getStartHour();
+
+                if (hours >= 35) {
+                    return false;
+                }
+
+                if (schedule.get(j).getStartHour() > 12 && (schedule.get(j).getStartHour() - schedule.get(j-1).getEndHour()) < 1) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -108,13 +126,14 @@ public class Solution {
      * Neatly prints the schedule of an interface
      * @param i : interface id
      */
-    public void printSchedule(int i){
+    public List<Formation> printSchedule(int i){
         //pour chaque interface
             //ajouter dans une liste l'index des formations correspondantes
             //récupérer les infos de chaque formation
             //Former un emploi du temps avec les horaires de chaque formation
 
         List<Integer> indexList = getInterfaceIndexes(i);
+        List<Formation> schedule = new ArrayList<>();
 
         for (int j = 0; j < indexList.size(); j++) {
             int n = indexList.get(j);
@@ -124,10 +143,13 @@ public class Solution {
             int start = formation.getStartHour();
             int end = formation.getEndHour();
             System.out.println(id + ": " + day + ", " + start + "-" + end);
+            schedule.add(formation);
         }
+
+        return schedule;
     }
 
-    
+
 
     public int[] getAssignationArray(){ return assignation; }
 
