@@ -6,8 +6,8 @@ public final class Utils {
 
         for (int i = 0; i < Generator.NBR_CENTRES_FORMATION; i++) {
             for (int j = 0; j < Generator.NBR_CENTRES_FORMATION; j++) {
-                Center ca = Generator.centerList.get(i);
-                Center cb = Generator.centerList.get(j);
+                Center ca = Generator.getCenterList().get(i);
+                Center cb = Generator.getCenterList().get(j);;
 
                 int x1 = ca.getCoord().x;
                 int y1 = ca.getCoord().y;
@@ -17,7 +17,7 @@ public final class Utils {
                 if (ca != cb) {
                     M[i][j] = calculateDist(x1, y1, x2, y2);
                 } else {
-                    Center ci = Generator.centerList.get(0);
+                    Center ci = Generator.getCenterList().get(0);
                     M[i][j] = calculateDist(ci.getCoord().x, ci.getCoord().y, x2, y2);
                 }
 

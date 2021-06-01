@@ -5,13 +5,15 @@
  */
 public class Formation {
 
+    private final int id;
     private final Speciality speciality;
     private final int skill;
     private final Day day;
-    private final int start;
-    private final int end;
+    private final int start; //Double ?
+    private final int end; //Double .
 
-    public Formation(Speciality speciality, int skill, Day day, int start, int end) {
+    public Formation(int id, Speciality speciality, int skill, Day day, int start, int end) {
+        this.id = id;
         this.speciality = speciality;
         this.skill = skill;
         this.day = day;
