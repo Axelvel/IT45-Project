@@ -96,11 +96,13 @@ public class Tabu {
     /**
      * Find the fastest and easiest valid solution, without caring about
      * optimization. Mostly used for test.
-     * @param instance : an instance of a problem
      * @return a possible solution
      */
-    public Solution getClosestNeighboorSol(Generator instance){
+    public Solution getClosestNeighborSol(){
         //TODO : implement an easy but valid solution for test purposes
+        Solution closestNeighborSol = new Solution(Generator.NBR_FORMATIONS);
+
+        return closestNeighborSol;
     }
 
 }
