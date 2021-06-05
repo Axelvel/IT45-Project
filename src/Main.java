@@ -16,7 +16,7 @@ public class Main {
 
         System.out.println("\nCentres : " + instance.getCenterArray().length + "\n");
         for(int i = 0;i<instance.getCenterArray().length;i++){instance.getCenterArray()[i].print(); }
-        
+
         System.out.println("\nDISTANCES :");
         Utils.printMatrix(instance.getDistanceMatrix());
 
