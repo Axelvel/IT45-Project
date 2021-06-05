@@ -1,6 +1,10 @@
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Implement the tabu class, used to resolve our optimization problem
+ * TODO : more explanations
+ */
 public class Tabu {
 
     private Solution bestSolution;
@@ -12,12 +16,25 @@ public class Tabu {
         this.tabuLength = tabuLength;
     }
 
+    /**
+     * Heuristic method, TODO : more explanations flemme
+     * @param dist
+     * @param spe
+     * @return
+     */
     public double heuristic(double dist, boolean spe) {
         //return spe * dist;
         return 0;
     }
 
-
+    /**
+     * Creates a matrix with a given solution
+     * Each line corresponds to a formation, and each column to an interface
+     * The value of matrix[formation][interface] is the heuristic value of that position if
+     * the interface manages the formation, -infinity if not
+     * @param sol : a solution
+     * @return mvmtMatrix : a double[][] matrix
+     */
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
         Arrays.fill(mvmtMatrix,Double.NEGATIVE_INFINITY); //TODO : vérifie si ça marche lol
@@ -48,7 +65,13 @@ public class Tabu {
 
         return mvmtMatrix;
     }
-    
+
+    /**
+     * Find a solution close to the one given in the parameters by trying to
+     * optimize it
+     * @param currentSol : current solution
+     * @return neighborSol : better solution
+     */
     public Solution computeNeighborhood(Solution currentSol){
         Solution neighborSol = currentSol;
 
@@ -59,6 +82,10 @@ public class Tabu {
         return neighborSol;
     }
 
+    /**
+     * Add a movement to the tabu list
+     * @param i : TODO : ?
+     */
     public void addToTabuList(int i) {
         tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
@@ -66,5 +93,14 @@ public class Tabu {
         }
     }
 
+    /**
+     * Find the fastest and easiest valid solution, without caring about
+     * optimization. Mostly used for test.
+     * @param instance : an instance of a problem
+     * @return a possible solution
+     */
+    public Solution getClosestNeighboorSol(Generator instance){
+        //TODO : implement an easy but valid solution for test purposes
+    }
 
 }
