@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 public class Tabu {
@@ -12,20 +13,26 @@ public class Tabu {
     }
 
     public double heuristic(double dist, boolean spe) {
-        //return spe(x) * dist(a,b)
+        //return spe * dist;
         return 0;
     }
 
 
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
+        Arrays.fill(mvmtMatrix,Double.NEGATIVE_INFINITY); //TODO : vérifie si ça marche lol
         double dist = 0;
         boolean spe = false;
 
+
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+            //On récupère le schedule de l'interface
             List<Formation> schedule = sol.generateSchedule(i);
+            //Coordonnées du centre de départ
             Center prevCenter = Generator.getCenterArray()[0];
             for(Formation f : schedule){
+                //Pour chaque formation dans le schedule, on calcule l'heuristic à l'aide de la distance avec
+                //la formation précédente
                 Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
                 dist = Utils.calculateDist(prevCenter,currentCenter);
                 spe = sol.isSpecialtyValid(f.getId());
@@ -33,20 +40,10 @@ public class Tabu {
                 mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
                 prevCenter = currentCenter;
             }
-            dist += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-            //calculate last heuristic
+            //dernier centre
+            dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
             mvmtMatrix[Generator.NBR_FORMATIONS][i] = heuristic(dist, spe);
-            dist = 0;
-        }
-
-        //Calculer les schedules de chaque interfaces
-        //Pour chaque interface, ajouter dans les formations correspondantes
-        //la distance calculée entre la précédent et la prochaine
-
-        //mettre -infini dans le reste de la colonne
-
-        for(int i = 0; i<Generator.NBR_FORMATIONS;i++){
-            mvmtMatrix[i][sol.getAssignation(i)] = 1; //TODO: heuristic
+            //dist = 0;
         }
 
         return mvmtMatrix;
