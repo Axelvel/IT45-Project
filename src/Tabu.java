@@ -1,5 +1,10 @@
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Implement the tabu class, used to resolve our optimization problem
+ * TODO : more explanations
+ */
 public class Tabu {
 
     private Solution bestSolution;
@@ -38,8 +43,13 @@ public class Tabu {
         return bestSolution;
     }
 
+    /**
+     * Heuristic method, TODO : more explanations flemme
+     * @param dist
+     * @param spe
+     * @return
+     */
     public double heuristic(double dist, boolean spe) {
-        //return spe(x) * dist(a,b)
 
         float coefficient;
 
@@ -54,16 +64,29 @@ public class Tabu {
 
 
 
-
+    /**
+     * Creates a matrix with a given solution
+     * Each line corresponds to a formation, and each column to an interface
+     * The value of matrix[formation][interface] is the heuristic value of that position if
+     * the interface manages the formation, -infinity if not
+     * @param sol : a solution
+     * @return mvmtMatrix : a double[][] matrix
+     */
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
+        Arrays.fill(mvmtMatrix,Double.NEGATIVE_INFINITY); //TODO : vérifie si ça marche lol
         double dist = 0;
         boolean spe = false;
 
+
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+            //On récupère le schedule de l'interface
             List<Formation> schedule = sol.generateSchedule(i);
+            //Coordonnées du centre de départ
             Center prevCenter = Generator.getCenterArray()[0];
             for(Formation f : schedule){
+                //Pour chaque formation dans le schedule, on calcule l'heuristic à l'aide de la distance avec
+                //la formation précédente
                 Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
                 dist = Utils.calculateDist(prevCenter,currentCenter);
                 spe = sol.isSpecialtyValid(f.getId());
@@ -71,25 +94,21 @@ public class Tabu {
                 mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
                 prevCenter = currentCenter;
             }
-            dist += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-            //calculate last heuristic
+            //dernier centre
+            dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
             mvmtMatrix[Generator.NBR_FORMATIONS][i] = heuristic(dist, spe);
-            dist = 0;
-        }
-
-        //Calculer les schedules de chaque interfaces
-        //Pour chaque interface, ajouter dans les formations correspondantes
-        //la distance calculée entre la précédent et la prochaine
-
-        //mettre -infini dans le reste de la colonne
-
-        for(int i = 0; i<Generator.NBR_FORMATIONS;i++){
-            mvmtMatrix[i][sol.getAssignation(i)] = 1; //TODO: heuristic
+            //dist = 0;
         }
 
         return mvmtMatrix;
     }
-    
+
+    /**
+     * Find a solution close to the one given in the parameters by trying to
+     * optimize it
+     * @param currentSol : current solution
+     * @return neighborSol : better solution
+     */
     public Solution computeNeighborhood(Solution currentSol){
         Solution neighborSol = currentSol;
 
@@ -100,6 +119,10 @@ public class Tabu {
         return neighborSol;
     }
 
+    /**
+     * Add a movement to the tabu list
+     * @param i : TODO : ?
+     */
     public void addToTabuList(int i) {
         tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
@@ -107,5 +130,16 @@ public class Tabu {
         }
     }
 
+    /**
+     * Find the fastest and easiest valid solution, without caring about
+     * optimization. Mostly used for test.
+     * @return a possible solution
+     */
+    public Solution getClosestNeighborSol(){
+        //TODO : implement an easy but valid solution for test purposes
+        Solution closestNeighborSol = new Solution(Generator.NBR_FORMATIONS);
+
+        return closestNeighborSol;
+    }
 
 }
