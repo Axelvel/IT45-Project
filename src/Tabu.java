@@ -23,11 +23,15 @@ public class Tabu {
      * @return
      */
     public double heuristic(double dist, boolean spe) {
-        if(spe){
-            return dist;
-        }else{
-            return 0;
+        float coefficient;
+
+        if (spe) {
+            coefficient = 1;
+        } else {
+            coefficient = (float) 1.4;
         }
+
+        return coefficient * dist;
     }
 
     /**
