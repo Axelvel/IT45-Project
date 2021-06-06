@@ -23,6 +23,10 @@ public class Interface {
         System.out.println(str.get());
     }
 
+    public String toString(){
+        return "Skill : ("+skill+")\n Specialities : (" + specialities + ") ";
+    }
+
     public int getSkill(){ return skill; }
     public List<Speciality> getSpecialities(){ return specialities; }
 }

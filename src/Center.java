@@ -20,6 +20,9 @@ public class Center {
         System.out.println(speciality + " : (" + coord.x + "," + coord.y + ")");
     }
 
+    public String toString(){
+        return speciality+" : (" + coord.x + ", " + coord.y + ")";
+    }
     public Speciality getSpeciality(){ return speciality; }
     public Pair<Integer, Integer> getCoordinates(){ return coord; }
 }
