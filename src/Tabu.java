@@ -102,6 +102,18 @@ public class Tabu {
         //TODO : implement an easy but valid solution for test purposes
         Solution closestNeighborSol = new Solution(Generator.NBR_FORMATIONS);
 
+        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
+            for(int j = 0; j < Generator.NBR_INTERFACES;j++){
+                closestNeighborSol.setAssignation(i,j);
+
+                if(!closestNeighborSol.isScheduleValid(j)){
+                    closestNeighborSol.setAssignation(i, (int) Double.NEGATIVE_INFINITY);
+                }else{
+                    break;
+                }
+            }
+        }
+
         return closestNeighborSol;
     }
 
