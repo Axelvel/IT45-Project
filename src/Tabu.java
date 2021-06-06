@@ -171,8 +171,8 @@ public class Tabu {
      * Add a movement to the tabu list
      * @param i : TODO : ?
      */
-    public void addToTabuList(int i) {
-        tabuList.add(i);
+    public void addToTabuList(Utils.Pair<Integer, Integer> i) {
+        //tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
             tabuList.remove(0);
         }
@@ -223,7 +223,7 @@ public class Tabu {
             }
         }
         //Add movement to tabuList
-        //addToTabuList(minimum);
+        addToTabuList(minimum);
 
         return minimum;
     }
