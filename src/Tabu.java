@@ -9,7 +9,7 @@ public class Tabu {
 
     private Solution bestSolution;
     private double[][] matrix;
-    private List<Integer> tabuList; //TODO: Modify
+    private List<Utils.Pair<Integer, Integer>> tabuList;
     private int tabuLength;
 
     public Tabu(int tabuLength) {
@@ -172,7 +172,7 @@ public class Tabu {
      * @param i : TODO : ?
      */
     public void addToTabuList(Utils.Pair<Integer, Integer> i) {
-        //tabuList.add(i);
+        tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
             tabuList.remove(0);
         }
