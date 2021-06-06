@@ -38,13 +38,42 @@ public class Tabu {
      * @param sol : a solution
      * @return mvmtMatrix : a double[][] matrix
      */
-    public double[][] computeMatrix(Solution sol){ //TODO: optimiser (étant donné que les formations sont en ordre croissant on peut optimiser l'algo)
+    public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
-        for (double[] row : mvmtMatrix)
-            Arrays.fill(row, -1);
+        for (double[] row : mvmtMatrix) Arrays.fill(row, -1);
         double dist;
         boolean spe;
 
+        //calculer le schedule
+        //vérifier que itrface a au moins une formation le meme jour de formation
+        //si oui, prend celle qui est juste avant formation et calculer l'heursitique
+        //si non, calculer l'heuristique avec le centre 0
+        for(Formation formation: Generator.getFormationArray()){
+            for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+                //center of the studied formation
+                Center formationCenter = Generator.getCenterBySpeciality(formation.getSpeciality().getId());
+                //By default, previous center is the beginning center
+                Center prevCenter = Generator.getCenterArray()[0];
+                //interface's schedule
+                List<Formation> schedule = sol.generateSchedule(i);
+
+                //check if the interface already has a formation earlier that day. if yes, set
+                //the previous center to this formation center
+                for(Formation f: schedule) {
+                    if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
+                        prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                    }
+                }
+                //calculate the heuristic between the prevcenter and the possible formation center
+                dist = Utils.calculateDist(prevCenter,formationCenter);
+                spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
+                mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
+
+            }
+        }
+
+
+        /*
 
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
             //On récupère le schedule de l'interface
@@ -68,7 +97,7 @@ public class Tabu {
                 dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
                 //TODO : find a way to add the last center heuristic
             }
-        }
+        }*/
 
         return mvmtMatrix;
     }
@@ -86,6 +115,14 @@ public class Tabu {
         double[][] solMatrix = computeMatrix(currentSol);
         //A l'aide de cette matrice, trouver des solutions voisines
         //Si l'eval de ces solutions est meilleure, ajouter à la lsite
+
+        //voir 2-opt ?
+        //Solution initiale
+        //DO
+        //calculer solution voisine
+        //Si sa valeur est mieux alors
+        //la valeur initiale prend sa valeur
+        //Jusqu’à « critère d’arrêt atteint »
         
         return neighborhood;
     }
