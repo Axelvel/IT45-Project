@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Implement the tabu class, used to resolve our optimization problem
@@ -9,11 +10,11 @@ public class Tabu {
 
     private Solution bestSolution;
     private double[][] matrix;
-    private List<Integer> tabuList; //TODO: Modify
+    private List<Pair<Integer, Integer>> tabuList;
     private int tabuLength;
 
 
-    public Solution Tabu(Solution sol, int tabuLength, int i) {
+    public Solution Tabu(Solution sol, int tabuLength, long t) {
 
         tabuList.clear();
 
@@ -31,17 +32,24 @@ public class Tabu {
             return sol;
         }
 
-
         //Compute matrix
         //Determine best move to make and check the tabuList
         //Change the current solution
         //Check if eval(solution) > eval(bestSolution)
         //When time is up, stop the search
 
+        long startingTime = System.currentTimeMillis();
 
+        while (System.currentTimeMillis() - startingTime < 10000) {
+            //System.out.println(System.currentTimeMillis() - startingTime);
+            //Start new Thread
+        }
+        //Kill the Thread
+        System.out.println("Done");
 
         return bestSolution;
     }
+
 
     /**
      * Heuristic method, TODO : more explanations flemme
@@ -104,6 +112,33 @@ public class Tabu {
     }
 
     /**
+     * Gets the minimal value of a given matrix (if the movement is not tabu)
+     * Adds the optimal movement to the tabuList
+     * @param matrix
+     * @return the coordinates of the minimum value
+     */
+    public Pair<Integer, Integer> getMinimum(Double[][] matrix) {
+
+
+        Pair<Integer, Integer> minimum = new Pair(0,0);
+
+        for (int i = 0; i < Generator.NBR_INTERFACES; i++) {
+            for (int j = 0; j < Generator.NBR_FORMATIONS; i++) {
+                if (!tabuList.contains(new Pair(i,j))) {
+                    if (matrix[i][j] < matrix[minimum.getX()][minimum.getY()]) {
+                        minimum = new Pair(i,j);
+                    }
+                }
+            }
+        }
+        //Add movement to tabuList
+        addToTabuList(minimum);
+
+        return minimum;
+    }
+
+
+    /**
      * Find a solution close to the one given in the parameters by trying to
      * optimize it
      * @param currentSol : current solution
@@ -123,7 +158,7 @@ public class Tabu {
      * Add a movement to the tabu list
      * @param i : TODO : ?
      */
-    public void addToTabuList(int i) {
+    public void addToTabuList(Pair<Integer, Integer> i) {
         tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
             tabuList.remove(0);
