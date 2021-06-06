@@ -38,7 +38,7 @@ public class Tabu {
      * @param sol : a solution
      * @return mvmtMatrix : a double[][] matrix
      */
-    public double[][] computeMatrix(Solution sol){ //TODO: refaire en prenant en compte les différents jours !!
+    public double[][] computeMatrix(Solution sol){ //TODO: optimiser (étant donné que les formations sont en ordre croissant on peut optimiser l'algo)
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
         for (double[] row : mvmtMatrix)
             Arrays.fill(row, -1);
@@ -49,41 +49,45 @@ public class Tabu {
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
             //On récupère le schedule de l'interface
             List<Formation> schedule = sol.generateSchedule(i);
-            //Coordonnées du centre de départ
-            Center prevCenter = Generator.getCenterArray()[0];
-            for(Formation f : schedule){
-                //Pour chaque formation dans le schedule, on calcule l'heuristic à l'aide de la distance avec
-                //la formation précédente
-                Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
-                dist = Utils.calculateDist(prevCenter,currentCenter);
-                spe = sol.isSpecialtyValid(f.getId());
-                //calculate heuristic
-                mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
-                prevCenter = currentCenter;
+
+            //Pour chaque jour
+            for(Day day : Day.values()){
+                //Coordonnées du centre de départ
+                Center prevCenter = Generator.getCenterArray()[0];
+
+                for(Formation f : schedule){
+                    if(f.getDay() == day){
+                        Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                        dist = Utils.calculateDist(prevCenter,currentCenter);
+                        spe = sol.isSpecialtyValid(f.getId());
+                        //calculate heuristic
+                        mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
+                        prevCenter = currentCenter;
+                    }
+                }
+                dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
+                //TODO : find a way to add the last center heuristic
             }
-            //dernier centre
-            dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-            //mvmtMatrix[Generator.NBR_FORMATIONS][i] = heuristic(dist, spe);
-            //dist = 0;
         }
 
         return mvmtMatrix;
     }
 
     /**
-     * Find a solution close to the one given in the parameters by trying to
+     * Find solutions close to the one given in the parameters by trying to
      * optimize it
      * @param currentSol : current solution
-     * @return neighborSol : better solution
+     * @return neighborSol : list of better solution
      */
-    public Solution computeNeighborhood(Solution currentSol){
-        Solution neighborSol = currentSol;
+    public List<Solution> computeNeighborhood(Solution currentSol){
+        List<Solution> neighborhood = null;
 
         //Calculer la matrice
+        double[][] solMatrix = computeMatrix(currentSol);
         //A l'aide de cette matrice, trouver des solutions voisines
-        //Renvoyer une liste de solution voisines ?
+        //Si l'eval de ces solutions est meilleure, ajouter à la lsite
         
-        return neighborSol;
+        return neighborhood;
     }
 
     /**
