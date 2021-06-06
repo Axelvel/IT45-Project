@@ -202,4 +202,31 @@ public class Tabu {
         return closestNeighborSol;
     }
 
+    /**
+     * Gets the minimal value of a given matrix (if the movement is not tabu)
+     * Adds the optimal movement to the tabuList
+     * @param matrix
+     * @return the coordinates of the minimum value
+     */
+    public Utils.Pair<Integer, Integer> getMinimum(Double[][] matrix) {
+
+
+        Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0,0);
+
+        for (int i = 0; i < Generator.NBR_INTERFACES; i++) {
+            for (int j = 0; j < Generator.NBR_FORMATIONS; i++) {
+                if (!tabuList.contains(new Utils.Pair(i,j))) {
+                    if (matrix[i][j] < matrix[minimum.x][minimum.y]) {
+                        minimum = new Utils.Pair(i,j);
+                    }
+                }
+            }
+        }
+        //Add movement to tabuList
+        //addToTabuList(minimum);
+
+        return minimum;
+    }
+
+
 }
