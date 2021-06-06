@@ -25,5 +25,9 @@ public class Main {
         //testSol.printAssignation();
         testSol.showSolutionDetails();
 
+        System.out.println("Assignation matrix : ");
+        double[][] matrix = testSearch.computeMatrix(testSol);
+        Utils.printMatrix(matrix);
+
     }
 }

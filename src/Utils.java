@@ -14,8 +14,6 @@ public final class Utils {
                 if (ca != cb) {
                     M[i][j] = calculateDist(ca,cb);
                 } else {
-                    /*Center ci = Generator.getCenterArray()[0];
-                    M[i][j] = calculateDist(ci.getCoord().x, ci.getCoord().y, x2, y2);*/
                     M[i][j] = 0;
                 }
 
@@ -64,4 +62,5 @@ public final class Utils {
 
         return result;
     }
+
 }

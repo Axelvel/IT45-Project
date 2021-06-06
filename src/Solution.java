@@ -17,7 +17,7 @@ public class Solution {
     public Solution(int nbFormations){
         this.nbFormations = nbFormations;
         this.assignation = new int[nbFormations];
-        Arrays.fill(this.assignation, (int) Double.NEGATIVE_INFINITY);
+        Arrays.fill(this.assignation, -1);
     }
 
     /**
@@ -144,7 +144,7 @@ public class Solution {
      */
     public void printAssignation(){
         for(int i = 0;i < nbFormations;i++){
-            System.out.println("Formation "+i+" assigned to interface "+getAssignation(i));
+            System.out.println("F"+i+" - "+getAssignation(i));
         }
     }
 
@@ -220,7 +220,7 @@ public class Solution {
             }
         }
 
-        System.out.println("Interfaces not assigned to a formation : ");
+        System.out.println("\nInterfaces not assigned to a formation : ");
         for(int i = 0; i< Generator.NBR_INTERFACES;i++){
             if(!Utils.contains(assignation,i)){
                 System.out.print(i + " - ");

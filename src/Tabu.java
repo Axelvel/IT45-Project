@@ -23,8 +23,11 @@ public class Tabu {
      * @return
      */
     public double heuristic(double dist, boolean spe) {
-        //return spe * dist;
-        return 0;
+        if(spe){
+            return dist;
+        }else{
+            return 0;
+        }
     }
 
     /**
@@ -35,9 +38,10 @@ public class Tabu {
      * @param sol : a solution
      * @return mvmtMatrix : a double[][] matrix
      */
-    public double[][] computeMatrix(Solution sol){
+    public double[][] computeMatrix(Solution sol){ //TODO: refaire en prenant en compte les différents jours !!
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
-        Arrays.fill(mvmtMatrix,Double.NEGATIVE_INFINITY); //TODO : vérifie si ça marche lol
+        for (double[] row : mvmtMatrix)
+            Arrays.fill(row, -1);
         double dist = 0;
         boolean spe = false;
 
@@ -59,7 +63,7 @@ public class Tabu {
             }
             //dernier centre
             dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-            mvmtMatrix[Generator.NBR_FORMATIONS][i] = heuristic(dist, spe);
+            //mvmtMatrix[Generator.NBR_FORMATIONS][i] = heuristic(dist, spe);
             //dist = 0;
         }
 
@@ -107,7 +111,7 @@ public class Tabu {
                 closestNeighborSol.setAssignation(i,j);
 
                 if(!closestNeighborSol.isScheduleValid(j)){
-                    closestNeighborSol.setAssignation(i, (int) Double.NEGATIVE_INFINITY);
+                    closestNeighborSol.setAssignation(i, -1);
                 }else{
                     break;
                 }
