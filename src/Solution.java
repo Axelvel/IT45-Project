@@ -11,12 +11,10 @@ import java.util.List;
  */
 public class Solution {
 
-    private final int nbFormations;
     private int[] assignation;
 
-    public Solution(int nbFormations){
-        this.nbFormations = nbFormations;
-        this.assignation = new int[nbFormations];
+    public Solution(){
+        this.assignation = new int[Generator.NBR_FORMATIONS];
         Arrays.fill(this.assignation, -1);
     }
 
@@ -36,11 +34,9 @@ public class Solution {
 
     /**
      * Check if a solution is valid
-     * @return
+     * @return true if valid, false if not
      */
-    public boolean isValid(){
-        return true;
-    }
+    public boolean isValid(){ return true; }
 
     /**
      * Checks if the interface assigned to the formation has the right skill
@@ -65,11 +61,7 @@ public class Solution {
         int id = this.getAssignation(f);
         Speciality spe = Generator.getFormationArray()[f].getSpeciality();
 
-        if (Generator.getInterfaceArray()[id].getSpecialities().contains(spe)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Generator.getInterfaceArray()[id].getSpecialities().contains(spe);
     }
 
     /**
@@ -143,7 +135,7 @@ public class Solution {
      * Print the content of the assignation array
      */
     public void printAssignation(){
-        for(int i = 0;i < nbFormations;i++){
+        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
             System.out.println("F"+i+" - "+getAssignation(i));
         }
     }
@@ -156,8 +148,7 @@ public class Solution {
         List<Integer> indexList = getInterfaceIndexes(i);
         List<Formation> schedule = new ArrayList<>();
 
-        for (int j = 0; j < indexList.size(); j++) {
-            int n = indexList.get(j);
+        for (int n : indexList) {
             Formation formation = Generator.getFormationArray()[n];
             schedule.add(formation);
         }
@@ -240,7 +231,6 @@ public class Solution {
     }
 
     public int[] getAssignationArray(){ return assignation; }
-    public int getNbFormations(){ return nbFormations; }
 
 }
 

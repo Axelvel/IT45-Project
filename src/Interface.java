@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Interface {
 
     private final int skill;
-    private List<Speciality> specialities = new ArrayList<>(); //Array ?
+    private final List<Speciality> specialities; //Array ?
 
     public Interface(int skill, List<Speciality> specialities) {
         this.skill = skill;

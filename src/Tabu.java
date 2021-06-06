@@ -42,8 +42,8 @@ public class Tabu {
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
         for (double[] row : mvmtMatrix)
             Arrays.fill(row, -1);
-        double dist = 0;
-        boolean spe = false;
+        double dist;
+        boolean spe;
 
 
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
@@ -108,7 +108,7 @@ public class Tabu {
      */
     public Solution getClosestNeighborSol(){
         //TODO : implement an easy but valid solution for test purposes
-        Solution closestNeighborSol = new Solution(Generator.NBR_FORMATIONS);
+        Solution closestNeighborSol = new Solution();
 
         for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
             for(int j = 0; j < Generator.NBR_INTERFACES;j++){

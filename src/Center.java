@@ -4,15 +4,15 @@
  */
 public class Center {
 
-    private final Pair<Integer, Integer> coord;
+    private final Utils.Pair<Integer, Integer> coord;
     private final Speciality speciality;
 
-    public Center(Pair<Integer, Integer> coord, Speciality speciality) {
+    public Center(Utils.Pair<Integer, Integer> coord, Speciality speciality) {
         this.coord = coord;
         this.speciality = speciality;
     }
 
-    public Pair<Integer, Integer> getCoord() {
+    public Utils.Pair<Integer, Integer> getCoord() {
         return coord;
     }
 
@@ -24,5 +24,5 @@ public class Center {
         return speciality+" : (" + coord.x + ", " + coord.y + ")";
     }
     public Speciality getSpeciality(){ return speciality; }
-    public Pair<Integer, Integer> getCoordinates(){ return coord; }
+    public Utils.Pair<Integer, Integer> getCoordinates(){ return coord; }
 }

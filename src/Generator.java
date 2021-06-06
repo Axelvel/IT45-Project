@@ -1,6 +1,5 @@
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class Generator {
 
@@ -73,7 +72,7 @@ public class Generator {
             //Generate coord
             int x = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
             int y = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
-            Pair coord = new Pair(x,y);
+            Utils.Pair coord = new Utils.Pair(x,y);
 
             Speciality speciality;
 
