@@ -5,16 +5,54 @@ public class Tabu {
     private Solution bestSolution;
     private double[][] matrix;
     private List<Integer> tabuList; //TODO: Modify
-    private final int tabuLength;
+    private int tabuLength;
 
-    public Tabu(int tabuLength) {
-        this.tabuLength = tabuLength;
+
+    public Solution Tabu(Solution sol, int tabuLength, int i) {
+
+        tabuList.clear();
+
+        if (sol.isValid()) {
+            bestSolution = sol;
+        } else {
+            System.out.println("Initial solution is not valid");
+            return sol;
+        }
+
+        if (tabuLength > 0) {
+            this.tabuLength = tabuLength;
+        } else {
+            System.out.println("tabuLength needs to be > 0");
+            return sol;
+        }
+
+
+        //Compute matrix
+        //Determine best move to make and check the tabuList
+        //Change the current solution
+        //Check if eval(solution) > eval(bestSolution)
+        //When time is up, stop the search
+
+
+
+        return bestSolution;
     }
 
     public double heuristic(double dist, boolean spe) {
         //return spe(x) * dist(a,b)
-        return 0;
+
+        float coefficient;
+
+        if (spe) {
+            coefficient = 1;
+        } else {
+            coefficient = (float) 1.4;
+        }
+
+        return coefficient * dist;
     }
+
+
 
 
     public double[][] computeMatrix(Solution sol){
