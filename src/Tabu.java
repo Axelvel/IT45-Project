@@ -38,13 +38,23 @@ public class Tabu {
         //Check if eval(solution) > eval(bestSolution)
         //When time is up, stop the search
 
+
+
+        Runnable runnable =
+                () -> { System.out.println("Thread is running"); };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+        
         long startingTime = System.currentTimeMillis();
 
-        while (System.currentTimeMillis() - startingTime < 10000) {
-            //System.out.println(System.currentTimeMillis() - startingTime);
-            //Start new Thread
+
+        while (System.currentTimeMillis() - startingTime < 3 * 1000) {
+            System.out.println(System.currentTimeMillis() - startingTime);
         }
+
         //Kill the Thread
+        thread.interrupt();
         System.out.println("Done");
 
         return bestSolution;
