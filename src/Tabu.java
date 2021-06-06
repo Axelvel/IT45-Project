@@ -10,10 +10,46 @@ public class Tabu {
     private Solution bestSolution;
     private double[][] matrix;
     private List<Integer> tabuList; //TODO: Modify
-    private final int tabuLength;
+    private int tabuLength;
 
     public Tabu(int tabuLength) {
         this.tabuLength = tabuLength;
+    }
+
+    public Solution Tabu(Solution sol, int tabuLength, long t) {
+
+        tabuList.clear();
+
+        if (sol.isValid()) {
+            bestSolution = sol;
+        } else {
+            System.out.println("Initial solution is not valid");
+            return sol;
+        }
+
+        if (tabuLength > 0) {
+            this.tabuLength = tabuLength;
+        } else {
+            System.out.println("tabuLength needs to be > 0");
+            return sol;
+        }
+
+        //Compute matrix
+        //Determine best move to make and check the tabuList
+        //Change the current solution
+        //Check if eval(solution) > eval(bestSolution)
+        //When time is up, stop the search
+
+        long startingTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startingTime < 10000) {
+            //System.out.println(System.currentTimeMillis() - startingTime);
+            //Start new Thread
+        }
+        //Kill the Thread
+        System.out.println("Done");
+
+        return bestSolution;
     }
 
     /**
