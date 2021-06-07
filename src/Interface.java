@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Interface {
 
     private final int skill;
-    private List<Speciality> specialities = new ArrayList<>(); //Array ?
+    private final List<Speciality> specialities; //Array ?
 
     public Interface(int skill, List<Speciality> specialities) {
         this.skill = skill;
@@ -21,6 +21,10 @@ public class Interface {
         specialities.forEach(element -> str.set(str + element.name() + " "));
         str.set(str + ")");
         System.out.println(str.get());
+    }
+
+    public String toString(){
+        return "Skill : ("+skill+")\n Specialities : (" + specialities + ") ";
     }
 
     public int getSkill(){ return skill; }

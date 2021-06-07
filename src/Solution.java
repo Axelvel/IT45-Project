@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,12 +11,11 @@ import java.util.List;
  */
 public class Solution {
 
-    private final int nbFormations;
     private int[] assignation;
 
-    public Solution(int nbFormations){
-        this.nbFormations = nbFormations;
-        assignation = new int[nbFormations];
+    public Solution(){
+        this.assignation = new int[Generator.NBR_FORMATIONS];
+        Arrays.fill(this.assignation, -1);
     }
 
     /**
@@ -34,11 +34,9 @@ public class Solution {
 
     /**
      * Check if a solution is valid
-     * @return
+     * @return true if valid, false if not
      */
-    public boolean isValid(){
-        return true;
-    }
+    public boolean isValid(){ return true; }
 
     /**
      * Checks if the interface assigned to the formation has the right skill
@@ -63,11 +61,7 @@ public class Solution {
         int id = this.getAssignation(f);
         Speciality spe = Generator.getFormationArray()[f].getSpeciality();
 
-        if (Generator.getInterfaceArray()[id].getSpecialities().contains(spe)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Generator.getInterfaceArray()[id].getSpecialities().contains(spe);
     }
 
     /**
@@ -90,24 +84,24 @@ public class Solution {
             if (j != 0) {
                 if (schedule.get(j).getDay() == schedule.get(j-1).getDay()) {
                     if (schedule.get(j-1).getEndHour() > schedule.get(j).getStartHour()) {
-                        System.out.println(j);
-                        System.out.println("Pas compatible");
+                        //System.out.println(j);
+                        //System.out.println("Pas compatible");
                         return false;
                     } else {
                         endDay = schedule.get(j).getEndHour();
 
                         if (endDay - startday >= 12) {
-                            System.out.println("Amplitude horraire journée dépassée");
+                            //System.out.println("Amplitude horraire journée dépassée");
                             return false;
                         }
 
                         if (hours >= 35) {
-                            System.out.println("+35 heures semaine");
+                            //System.out.println("+35 heures semaine");
                             return false;
                         }
 
                         if (schedule.get(j).getStartHour() > 12 && (schedule.get(j).getStartHour() - schedule.get(j-1).getEndHour()) < 1) {
-                            System.out.println("Bouffe");
+                            //System.out.println("Bouffe");
                             return false;
                         }
                     }
@@ -117,7 +111,7 @@ public class Solution {
             }
 
         }
-        System.out.println("Hours : " + hours);
+        //System.out.println("Hours : " + hours);
         return true;
     }
 
@@ -141,8 +135,8 @@ public class Solution {
      * Print the content of the assignation array
      */
     public void printAssignation(){
-        for(int i = 0;i < nbFormations;i++){
-            System.out.println("Formation "+i+" assigned to interface "+getAssignation(i));
+        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
+            System.out.println("F"+i+" - "+getAssignation(i));
         }
     }
 
@@ -154,8 +148,7 @@ public class Solution {
         List<Integer> indexList = getInterfaceIndexes(i);
         List<Formation> schedule = new ArrayList<>();
 
-        for (int j = 0; j < indexList.size(); j++) {
-            int n = indexList.get(j);
+        for (int n : indexList) {
             Formation formation = Generator.getFormationArray()[n];
             schedule.add(formation);
         }
@@ -202,8 +195,42 @@ public class Solution {
         return 0.5 * (avrDist + strdDev) + 0.5 * factor * penalties;
     }
 
+    /**
+     * Test function used to see the details of a solution, including the
+     * list of interfaces that aren't assigned to any formations, an
+     * evaluation of the solution, and examples of schedules of a few interfaces
+     * and their work time
+     */
+    public void showSolutionDetails(){
+        System.out.println("##### SOLUTION DETAILS #####");
+        //list which interface don't have any formations
+        System.out.println("Interfaces assigned to a formation : ");
+        for(int i = 0; i< Generator.NBR_INTERFACES;i++){
+            if(Utils.contains(assignation,i)){
+                System.out.print(i + " - ");
+            }
+        }
+
+        System.out.println("\nInterfaces not assigned to a formation : ");
+        for(int i = 0; i< Generator.NBR_INTERFACES;i++){
+            if(!Utils.contains(assignation,i)){
+                System.out.print(i + " - ");
+            }
+        }
+
+        //give the eval of a solution
+        System.out.println("\nValue of the solution :");
+        System.out.println(evalSolution());
+
+        //give an example of schedule for the 3 first interaces and their work time
+        System.out.println("\nSchedule examples :");
+        for(int j = 0; j < 3;j++){
+            List<Formation> schedule = generateSchedule(j);
+            System.out.println("Interface "+j+" : "+schedule);
+        }
+    }
+
     public int[] getAssignationArray(){ return assignation; }
-    public int getNbFormations(){ return nbFormations; }
 
 }
 

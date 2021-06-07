@@ -25,6 +25,10 @@ public class Formation {
         System.out.println(id + "," + speciality + ", " + skill + ", " + day + ", " + start + ", " + end);
     }
 
+    public String toString(){
+        return "F"+id+" : " + day + " -> " + start + "h-" + end + "h";
+    }
+
     public int getId() { return id; }
     public Speciality getSpeciality(){ return speciality; }
     public int getSkill(){ return skill; }
