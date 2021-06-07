@@ -36,7 +36,16 @@ public class Solution {
      * Check if a solution is valid
      * @return true if valid, false if not
      */
-    public boolean isValid(){ return true; }
+    public boolean isValid(){
+        //check if all formations have been assigned
+        if(Utils.contains(assignation,-1)) return false;
+
+        //check if all schedules are valid
+        for(int i = 0;i < Generator.NBR_INTERFACES;i++){
+            if(!isScheduleValid(i)) return false;
+        }
+
+        return true; }
 
     /**
      * Checks if the interface assigned to the formation has the right skill
