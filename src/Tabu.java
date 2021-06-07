@@ -80,7 +80,7 @@ public class Tabu {
      */
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
-        for (double[] row : mvmtMatrix) Arrays.fill(row, -1);
+        for (double[] row : mvmtMatrix) Arrays.fill(row, Double.NEGATIVE_INFINITY);
         double dist;
         boolean spe;
 
@@ -90,55 +90,31 @@ public class Tabu {
         //si non, calculer l'heuristique avec le centre 0
         for(Formation formation: Generator.getFormationArray()){
             for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+                //interface's schedule
+                List<Formation> schedule = sol.generateSchedule(i);
                 //center of the studied formation
                 Center formationCenter = Generator.getCenterBySpeciality(formation.getSpeciality().getId());
                 //By default, previous center is the beginning center
                 Center prevCenter = Generator.getCenterArray()[0];
-                //interface's schedule
-                List<Formation> schedule = sol.generateSchedule(i);
 
-                //check if the interface already has a formation earlier that day. if yes, set
-                //the previous center to this formation center
-                for(Formation f: schedule) {
-                    if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
-                        prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                if(schedule.contains(formation)){
+                    mvmtMatrix[formation.getId()][i] = Double.NEGATIVE_INFINITY;
+                }else{
+                    //check if the interface already has a formation earlier that day. if yes, set
+                    //the previous center to this formation center
+                    for(Formation f: schedule) {
+                        if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
+                            prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                        }
                     }
+                    //calculate the heuristic between the prevcenter and the possible formation center
+                    dist = Utils.calculateDist(prevCenter,formationCenter);
+                    spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
+                    mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
                 }
-                //calculate the heuristic between the prevcenter and the possible formation center
-                dist = Utils.calculateDist(prevCenter,formationCenter);
-                spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
-                mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
 
             }
         }
-
-
-        /*
-
-        for(int i = 0;i<Generator.NBR_INTERFACES;i++){
-            //On récupère le schedule de l'interface
-            List<Formation> schedule = sol.generateSchedule(i);
-
-            //Pour chaque jour
-            for(Day day : Day.values()){
-                //Coordonnées du centre de départ
-                Center prevCenter = Generator.getCenterArray()[0];
-
-                for(Formation f : schedule){
-                    if(f.getDay() == day){
-                        Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
-                        dist = Utils.calculateDist(prevCenter,currentCenter);
-                        spe = sol.isSpecialtyValid(f.getId());
-                        //calculate heuristic
-                        mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
-                        prevCenter = currentCenter;
-                    }
-                }
-                dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-                //TODO : find a way to add the last center heuristic
-            }
-        }*/
-
         return mvmtMatrix;
     }
 
