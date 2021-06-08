@@ -35,4 +35,5 @@ public class Formation {
     public Day getDay(){ return day; }
     public int getStartHour(){ return start; }
     public int getEndHour(){ return end; }
+
 }

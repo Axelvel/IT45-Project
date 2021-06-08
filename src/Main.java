@@ -1,4 +1,4 @@
-
+import java.util.List;
 
 public class Main {
 
@@ -39,7 +39,5 @@ public class Main {
 */
 
         testSol = testSearch.tabuSearch(testSol, 3);
-
-
     }
 }

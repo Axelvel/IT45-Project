@@ -111,7 +111,7 @@ public class Tabu {
      */
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
-        for (double[] row : mvmtMatrix) Arrays.fill(row, Double.NEGATIVE_INFINITY);
+        for (double[] row : mvmtMatrix) Arrays.fill(row, Double.POSITIVE_INFINITY);
         double dist;
         boolean spe;
 
@@ -129,19 +129,26 @@ public class Tabu {
                 Center prevCenter = Generator.getCenterArray()[0];
 
                 if(schedule.contains(formation)){
-                    mvmtMatrix[formation.getId()][i] = Double.NEGATIVE_INFINITY;
+                    mvmtMatrix[formation.getId()][i] = Double.POSITIVE_INFINITY;
                 }else{
-                    //check if the interface already has a formation earlier that day. if yes, set
-                    //the previous center to this formation center
-                    for(Formation f: schedule) {
-                        if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
-                            prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+
+                    //ON AJOUTE AU SCHEDULE VITE FAIT, POUR VERIFIER SI CEST VALIDE
+                    int prevAssignation = sol.getAssignation(formation.getId());
+                    sol.setAssignation(formation.getId(),i);
+                    if(!sol.isScheduleValid(i)){
+                        sol.setAssignation(formation.getId(),prevAssignation);
+                        mvmtMatrix[formation.getId()][i] = Double.POSITIVE_INFINITY;
+                    }else{
+                        sol.setAssignation(formation.getId(),prevAssignation);
+                        for(Formation f:schedule){
+                            if(f.getDay() == formation.getDay() && f.getStartHour() > formation.getEndHour()){
+                                prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                            }
+                            dist = Utils.calculateDist(prevCenter,formationCenter);
+                            spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
+                            mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
                         }
                     }
-                    //calculate the heuristic between the prevcenter and the possible formation center
-                    dist = Utils.calculateDist(prevCenter,formationCenter);
-                    spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
-                    mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
                 }
             }
         }
