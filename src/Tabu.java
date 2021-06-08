@@ -27,108 +27,70 @@ public class Tabu {
 
     public  Solution tabuSearch(Solution sol, long t) {
 
+        //Nombre de changements de la bestSolution
+        int z = 0;
+
         if (tabuList != null) {
             tabuList.clear();
         }
 
-        bestSolution = sol;
 
+
+/*
         if (sol.isValid()) {
             bestSolution = sol;
         } else {
             System.out.println("Initial solution is not valid");
             return sol;
         }
-
-        System.out.print("\ntest");
-
-
-        //Compute matrix
-        //Determine best move to make and check the tabuList
-        //Change the current solution
-        //Check if eval(solution) > eval(bestSolution)
-        //When time is up, stop the search
-
-
-/*
-        Runnable runnable = () -> {
-
-            System.out.println("Thread is running");
-            Solution currentSol = sol;
-
-            while(true) {
-
-                //System.out.println("Assignation matrix : ");
-                double[][] matrix = computeMatrix(currentSol);
-                //Utils.printMatrix(matrix);
-                Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-                System.out.println(matrix[optimalMove.x][optimalMove.y]);
-
-                //currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
-
-                if (currentSol.evalSolution() < bestSolution.evalSolution()) {
-                    bestSolution = currentSol;
-                }
-            }
+*/
 
 
 
+        //Algorithme :
+
+            //Compute matrix
+            //Determine best move to make and check the tabuList
+            //Change the current solution
+            //Check if eval(solution) > eval(bestSolution)
+            //When time is up, stop the search
 
 
-        };
+        bestSolution = sol;
 
-        Thread thread = new Thread(runnable);
-        thread.start();
-        
-        long startingTime = System.currentTimeMillis();
+        System.out.println("Initial sol = " + sol.evalSolution());
+        System.out.println("BestSol = " + bestSolution.evalSolution());
 
-
-        while (System.currentTimeMillis() - startingTime < t * 1000) {
-            //System.out.println(System.currentTimeMillis() - startingTime);
-        }
-
-        //Kill the Thread
-        thread.interrupt();
-
- */
         Solution currentSol = sol;
 
         for (int n = 0; n < 150; n++) {
-            //System.out.println("Assignation matrix : ");
+
+            System.out.println("\n" + n +"\n");
+
             double[][] matrix = computeMatrix(currentSol);
-            //Utils.printMatrix(matrix);
+
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-            //System.out.println(matrix[optimalMove.x][optimalMove.y]);
 
-            currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
+            currentSol.setAssignation(optimalMove.y, optimalMove.x);
 
-            System.out.println("\nBlabla\n");
             System.out.println(currentSol.evalSolution());
             System.out.println(bestSolution.evalSolution());
 
-            if (currentSol.evalSolution() < bestSolution.evalSolution()) {
+            if (currentSol.evalSolution() < bestSolution.evalSolution()) { //Ne rentre jamais dedans
                 System.out.println("\n================== SWITCH ===================\n");
+                z++;
                 bestSolution = currentSol;
             }
 
 
         }
-/*
-        //System.out.println("Assignation matrix : ");
-        double[][] matrix = computeMatrix(sol);
-        Utils.printMatrix(matrix);
-        Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-        optimalMove.print();
-        System.out.println("\nV1 : " + matrix[optimalMove.x][optimalMove.y]);
-        System.out.println("\nV2 : " + matrix[optimalMove.y][optimalMove.x]);
-
-
- */
 
 
 
 
         System.out.println("\n***** Done *****\n");
+
+        System.out.println("Nombre de changements de bestSolution: = " + z + "\n");
 
         bestSolution.showSolutionDetails();
         //bestSolution.printAssignation();
@@ -169,7 +131,7 @@ public class Tabu {
      */
     public double[][] computeMatrix(Solution sol){
         double[][] mvmtMatrix = new double[Generator.NBR_FORMATIONS][Generator.NBR_INTERFACES];
-        for (double[] row : mvmtMatrix) Arrays.fill(row, -1);
+        for (double[] row : mvmtMatrix) Arrays.fill(row, Double.NEGATIVE_INFINITY);
         double dist;
         boolean spe;
 
@@ -179,55 +141,37 @@ public class Tabu {
         //si non, calculer l'heuristique avec le centre 0
         for(Formation formation: Generator.getFormationArray()){
             for(int i = 0;i<Generator.NBR_INTERFACES;i++){
+                //interface's schedule
+                List<Formation> schedule = sol.generateSchedule(i);
                 //center of the studied formation
                 Center formationCenter = Generator.getCenterBySpeciality(formation.getSpeciality().getId());
                 //By default, previous center is the beginning center
                 Center prevCenter = Generator.getCenterArray()[0];
-                //interface's schedule
-                List<Formation> schedule = sol.generateSchedule(i);
 
-                //check if the interface already has a formation earlier that day. if yes, set
-                //the previous center to this formation center
-                for(Formation f: schedule) {
-                    if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
-                        prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                if(schedule.contains(formation)){
+                    mvmtMatrix[formation.getId()][i] = Double.NEGATIVE_INFINITY;
+                }else{
+                    //check if the interface already has a formation earlier that day. if yes, set
+                    //the previous center to this formation center
+                    for(Formation f: schedule) {
+                        if(f.getDay() == formation.getDay() && f.getEndHour() < formation.getStartHour()){
+                            prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                        }
                     }
+                    //calculate the heuristic between the prevcenter and the possible formation center
+                    dist = Utils.calculateDist(prevCenter,formationCenter);
+                    spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
+                    mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
                 }
+
                 //calculate the heuristic between the prevcenter and the possible formation center
                 dist = Utils.calculateDist(prevCenter,formationCenter);
                 spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality()); //TODO: Modify
                 mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
 
+
             }
         }
-
-
-        /*
-
-        for(int i = 0;i<Generator.NBR_INTERFACES;i++){
-            //On récupère le schedule de l'interface
-            List<Formation> schedule = sol.generateSchedule(i);
-
-            //Pour chaque jour
-            for(Day day : Day.values()){
-                //Coordonnées du centre de départ
-                Center prevCenter = Generator.getCenterArray()[0];
-
-                for(Formation f : schedule){
-                    if(f.getDay() == day){
-                        Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
-                        dist = Utils.calculateDist(prevCenter,currentCenter);
-                        spe = sol.isSpecialtyValid(f.getId());
-                        //calculate heuristic
-                        mvmtMatrix[f.getId()][i] = heuristic(dist, spe);
-                        prevCenter = currentCenter;
-                    }
-                }
-                dist = Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-                //TODO : find a way to add the last center heuristic
-            }
-        }*/
-
         return mvmtMatrix;
     }
 
