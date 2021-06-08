@@ -20,14 +20,25 @@ public class Main {
         System.out.println("\nDISTANCES :");
         Utils.printMatrix(instance.getDistanceMatrix());*/
 
-        Tabu testSearch = new Tabu(100);
-        Solution testSol = testSearch.getClosestNeighborSol();
-        //testSol.printAssignation();
-        testSol.showSolutionDetails();
+        Tabu testSearch = new Tabu(1500);
+        Solution testSol = Tabu.getClosestNeighborSol();
 
+
+
+        testSol.printAssignation();
+        testSol.showSolutionDetails();
+        System.out.print("\ntest");
+
+
+        testSol = testSearch.tabuSearch(testSol, 3);
+
+
+        //testSol.printAssignation();
+        //testSol.showSolutionDetails();
+/*
         System.out.println("Assignation matrix : ");
         double[][] matrix = testSearch.computeMatrix(testSol);
         Utils.printMatrix(matrix);
-
+*/
     }
 }

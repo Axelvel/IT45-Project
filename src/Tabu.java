@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 /**
  * Implement the tabu class, used to resolve our optimization problem
@@ -9,16 +11,27 @@ public class Tabu {
 
     private Solution bestSolution;
     private double[][] matrix;
-    private List<Utils.Pair<Integer, Integer>> tabuList;
+    private List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
+
     private int tabuLength;
 
     public Tabu(int tabuLength) {
-        this.tabuLength = tabuLength;
+        if (tabuLength > 0) {
+            this.tabuLength = tabuLength;
+        } else {
+            System.out.println("tabuLength needs to be > 0");
+        }
+
     }
 
-    public Solution Tabu(Solution sol, int tabuLength, long t) {
 
-        tabuList.clear();
+    public  Solution tabuSearch(Solution sol, long t) {
+
+        if (tabuList != null) {
+            tabuList.clear();
+        }
+
+        bestSolution = sol;
 
         if (sol.isValid()) {
             bestSolution = sol;
@@ -27,12 +40,8 @@ public class Tabu {
             return sol;
         }
 
-        if (tabuLength > 0) {
-            this.tabuLength = tabuLength;
-        } else {
-            System.out.println("tabuLength needs to be > 0");
-            return sol;
-        }
+        System.out.print("\ntest");
+
 
         //Compute matrix
         //Determine best move to make and check the tabuList
@@ -40,17 +49,94 @@ public class Tabu {
         //Check if eval(solution) > eval(bestSolution)
         //When time is up, stop the search
 
+
+/*
+        Runnable runnable = () -> {
+
+            System.out.println("Thread is running");
+            Solution currentSol = sol;
+
+            while(true) {
+
+                //System.out.println("Assignation matrix : ");
+                double[][] matrix = computeMatrix(currentSol);
+                //Utils.printMatrix(matrix);
+                Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+                System.out.println(matrix[optimalMove.x][optimalMove.y]);
+
+                //currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
+
+                if (currentSol.evalSolution() < bestSolution.evalSolution()) {
+                    bestSolution = currentSol;
+                }
+            }
+
+
+
+
+
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+        
         long startingTime = System.currentTimeMillis();
 
-        while (System.currentTimeMillis() - startingTime < 10000) {
+
+        while (System.currentTimeMillis() - startingTime < t * 1000) {
             //System.out.println(System.currentTimeMillis() - startingTime);
-            //Start new Thread
         }
+
         //Kill the Thread
-        System.out.println("Done");
+        thread.interrupt();
+
+ */
+        Solution currentSol = sol;
+
+        for (int n = 0; n < 150; n++) {
+            //System.out.println("Assignation matrix : ");
+            double[][] matrix = computeMatrix(currentSol);
+            //Utils.printMatrix(matrix);
+            Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+            //System.out.println(matrix[optimalMove.x][optimalMove.y]);
+
+            currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
+
+            System.out.println("\nBlabla\n");
+            System.out.println(currentSol.evalSolution());
+            System.out.println(bestSolution.evalSolution());
+
+            if (currentSol.evalSolution() < bestSolution.evalSolution()) {
+                System.out.println("\n================== SWITCH ===================\n");
+                bestSolution = currentSol;
+            }
+
+
+        }
+/*
+        //System.out.println("Assignation matrix : ");
+        double[][] matrix = computeMatrix(sol);
+        Utils.printMatrix(matrix);
+        Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+        optimalMove.print();
+        System.out.println("\nV1 : " + matrix[optimalMove.x][optimalMove.y]);
+        System.out.println("\nV2 : " + matrix[optimalMove.y][optimalMove.x]);
+
+
+ */
+
+
+
+
+        System.out.println("\n***** Done *****\n");
+
+        bestSolution.showSolutionDetails();
+        //bestSolution.printAssignation();
 
         return bestSolution;
     }
+
+
 
     /**
      * Heuristic method, TODO : more explanations flemme
@@ -59,16 +145,19 @@ public class Tabu {
      * @return
      */
     public double heuristic(double dist, boolean spe) {
-        float coefficient;
+
+        double coefficient;
 
         if (spe) {
             coefficient = 1;
         } else {
-            coefficient = (float) 1.4;
+            coefficient = 1.4;
         }
 
         return coefficient * dist;
     }
+
+
 
     /**
      * Creates a matrix with a given solution
@@ -112,14 +201,12 @@ public class Tabu {
                     spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
                     mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
                 }
-
             }
         }
         return mvmtMatrix;
     }
 
-    /**
-     * Find solutions close to the one given in the parameters by trying to
+     /** Find solutions close to the one given in the parameters by trying to
      * optimize it
      * @param currentSol : current solution
      * @return neighborSol : list of better solution
@@ -147,6 +234,7 @@ public class Tabu {
      * Add a movement to the tabu list
      * @param i : TODO : ?
      */
+
     public void addToTabuList(Utils.Pair<Integer, Integer> i) {
         tabuList.add(i);
         if (tabuList.size() >= tabuLength) {
@@ -159,7 +247,7 @@ public class Tabu {
      * optimization. Mostly used for test.
      * @return a possible solution
      */
-    public Solution getClosestNeighborSol(){
+    public static Solution getClosestNeighborSol(){
         //TODO : implement an easy but valid solution for test purposes
         Solution closestNeighborSol = new Solution();
 
@@ -184,16 +272,16 @@ public class Tabu {
      * @param matrix
      * @return the coordinates of the minimum value
      */
-    public Utils.Pair<Integer, Integer> getMinimum(Double[][] matrix) {
+    public Utils.Pair<Integer, Integer> getMinimum(double[][] matrix) {
 
 
         Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0,0);
 
-        for (int i = 0; i < Generator.NBR_INTERFACES; i++) {
-            for (int j = 0; j < Generator.NBR_FORMATIONS; i++) {
-                if (!tabuList.contains(new Utils.Pair(i,j))) {
+        for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
+            for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
+                if (tabuList != null && !tabuList.contains(new Utils.Pair(j,i))) {
                     if (matrix[i][j] < matrix[minimum.x][minimum.y]) {
-                        minimum = new Utils.Pair(i,j);
+                        minimum = new Utils.Pair(j,i);
                     }
                 }
             }

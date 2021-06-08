@@ -41,7 +41,7 @@ public class Solution {
         if(Utils.contains(assignation,-1)) return false;
 
         //check if all schedules are valid
-        for(int i = 0;i < Generator.NBR_INTERFACES;i++){
+        for(int i = 1;i <= Generator.NBR_INTERFACES;i++){
             if(!isScheduleValid(i)) return false;
         }
 
@@ -79,6 +79,10 @@ public class Solution {
      */
     public boolean isScheduleValid(int i) {
         List<Formation> schedule = generateSchedule(i);
+
+        if(schedule.size() == 0){
+            return true;
+        }
 
         int hours = 0;
         int startday = schedule.get(0).getStartHour();
