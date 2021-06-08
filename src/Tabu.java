@@ -1,3 +1,4 @@
+import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Tabu {
 
 
 
+
 /*
         if (sol.isValid()) {
             bestSolution = sol;
@@ -56,14 +58,14 @@ public class Tabu {
             //When time is up, stop the search
 
 
-        bestSolution = sol;
+        bestSolution = new Solution(sol);
 
-        System.out.println("Initial sol = " + sol.evalSolution());
-        System.out.println("BestSol = " + bestSolution.evalSolution());
+        System.out.println("\n\nInitial sol = " + sol.evalSolution());
+        System.out.println("\nBestSol = " + bestSolution.evalSolution());
 
-        Solution currentSol = sol;
+        Solution currentSol = new Solution(sol);
 
-        for (int n = 0; n < 150; n++) {
+        for (int n = 0; n < 2000; n++) {
 
             System.out.println("\n" + n +"\n");
 
@@ -71,15 +73,15 @@ public class Tabu {
 
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
 
-            currentSol.setAssignation(optimalMove.y, optimalMove.x);
+            currentSol.setAssignation(optimalMove.x, optimalMove.y);
 
             System.out.println(currentSol.evalSolution());
             System.out.println(bestSolution.evalSolution());
 
-            if (currentSol.evalSolution() < bestSolution.evalSolution()) { //Ne rentre jamais dedans
+            if (currentSol.evalSolution() < bestSolution.evalSolution()) {
                 System.out.println("\n================== SWITCH ===================\n");
                 z++;
-                bestSolution = currentSol;
+                bestSolution = new Solution(currentSol);
             }
 
 
@@ -91,9 +93,18 @@ public class Tabu {
         System.out.println("\n***** Done *****\n");
 
         System.out.println("Nombre de changements de bestSolution: = " + z + "\n");
-
+/*
+        for (int l = 0; l < tabuList.size(); l++) {
+            tabuList.get(l).print();
+        }
+*/
         bestSolution.showSolutionDetails();
         //bestSolution.printAssignation();
+
+        System.out.println("Initial sol = " + sol.evalSolution());
+        System.out.println("BestSol = " + bestSolution.evalSolution());
+
+        System.out.println(bestSolution.isValid());
 
         return bestSolution;
     }
@@ -243,22 +254,74 @@ public class Tabu {
      */
     public Utils.Pair<Integer, Integer> getMinimum(double[][] matrix) {
 
+        double minValue = Double.POSITIVE_INFINITY;
+        Utils.Pair<Integer, Integer> minimum = new Utils.Pair();
 
-        Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0,0);
 
         for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
             for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
-                if (tabuList != null && !tabuList.contains(new Utils.Pair(j,i))) {
-                    if (matrix[i][j] < matrix[minimum.x][minimum.y]) {
-                        minimum = new Utils.Pair(j,i);
+
+                if (matrix[i][j] < minValue) {
+                    if (!isTabu(new Utils.Pair<>(i, j))) {
+                        minValue = matrix[i][j];
+                        //
+                        minimum.x = i;
+                        minimum.y = j;
                     }
+
+
+                }
+
+            }
+        }
+        /*
+
+        double minValue = Double.POSITIVE_INFINITY;
+
+
+        //Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0,0);
+        Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0, 0);
+
+        for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
+            for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
+
+                if (tabuList != null) {
+                    if (isTabu(minimum)) { //TODO: Fix
+                        //minimum = 10000;
+                        //System.out.println("Bloub");
+
+                        if (matrix[i][j] < minValue) {
+                            //System.out.println("New Min");
+                            minimum.x = i;
+                            minimum.y = j;
+                            minValue = matrix[i][j];
+                            //System.out.println(matrix[i][j]);
+                        }
+                    }
+                } else {
+
                 }
             }
         }
+
         //Add movement to tabuList
         addToTabuList(minimum);
 
+         */
+
+        addToTabuList(minimum);
+
         return minimum;
+    }
+
+    public boolean isTabu(Utils.Pair<Integer, Integer> element) {
+        for (int n = 0; n < tabuList.size(); n++) {
+            if (tabuList.get(n).x == element.x && tabuList.get(n).y == element.y) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
