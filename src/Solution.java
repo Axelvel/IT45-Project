@@ -18,6 +18,10 @@ public class Solution {
         Arrays.fill(this.assignation, -1);
     }
 
+    public Solution(Solution sol) {
+        this.assignation = sol.assignation.clone();
+    }
+
     /**
      * Get the interface assigned to a formation
      * @param f : formation id
