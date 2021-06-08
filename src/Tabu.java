@@ -1,3 +1,4 @@
+import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,19 +28,19 @@ public class Tabu {
 
     public  Solution tabuSearch(Solution sol, long t) {
 
-        if (tabuList != null) tabuList.clear();
+        //Nombre de changements de la bestSolution
+        int z = 0;
 
-        if (sol.isValid()) {
-            bestSolution = sol;
-        } else {
-            System.out.println("Initial solution is not valid");
-            return null;
+        if (tabuList != null) {
+            tabuList.clear();
         }
-        Solution currentSol = sol;
 
-        System.out.print("\nTABU SEARCH");
+        bestSolution = new Solution(sol);
 
+        System.out.println("\n\nInitial sol = " + sol.evalSolution());
+        System.out.println("\nBestSol = " + bestSolution.evalSolution());
 
+        Solution currentSol = new Solution(sol);
 
 
         for (int n = 0; n < 150; n++) {
@@ -49,24 +50,30 @@ public class Tabu {
             //Utils.printMatrix(matrix);
 
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-            //System.out.println(matrix[optimalMove.x][optimalMove.y]);
-
-            currentSol.setAssignation(optimalMove.y, optimalMove.x); //TODO : check if this changes bestSolution as well
+            currentSol.setAssignation(optimalMove.x, optimalMove.y); //TODO : check if this changes bestSolution as well
 
             System.out.println("Current solution eval : " + currentSol.evalSolution());
             System.out.println("Best solution eval : " + bestSolution.evalSolution());
 
+
             if (currentSol.evalSolution() < bestSolution.evalSolution()) {
                 System.out.println("\n================== SWITCH ===================\n");
-                bestSolution = currentSol;
+                z++;
+                bestSolution = new Solution(currentSol);
             }
-
-
         }
+
         System.out.println("\n***** Done *****\n");
+
+        System.out.println("Nombre de changements de bestSolution: = " + z + "\n");
 
         bestSolution.showSolutionDetails();
         //bestSolution.printAssignation();
+
+        System.out.println("Initial sol = " + sol.evalSolution());
+        System.out.println("BestSol = " + bestSolution.evalSolution());
+
+        System.out.println(bestSolution.isValid());
 
         return bestSolution;
     }
@@ -209,22 +216,40 @@ public class Tabu {
      */
     public Utils.Pair<Integer, Integer> getMinimum(double[][] matrix) {
 
+        double minValue = Double.POSITIVE_INFINITY;
+        Utils.Pair<Integer, Integer> minimum = new Utils.Pair();
 
-        Utils.Pair<Integer, Integer> minimum = new Utils.Pair(0,0);
 
         for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
             for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
-                if (tabuList != null && !tabuList.contains(new Utils.Pair(j,i))) {
-                    if (matrix[i][j] < matrix[minimum.x][minimum.y]) {
-                        minimum = new Utils.Pair(j,i);
+
+                if (matrix[i][j] < minValue) {
+                    if (!isTabu(new Utils.Pair<>(i, j))) {
+                        minValue = matrix[i][j];
+                        //
+                        minimum.x = i;
+                        minimum.y = j;
                     }
+
+
                 }
+
             }
         }
-        //Add movement to tabuList
+
         addToTabuList(minimum);
 
         return minimum;
+    }
+
+    public boolean isTabu(Utils.Pair<Integer, Integer> element) {
+        for (int n = 0; n < tabuList.size(); n++) {
+            if (tabuList.get(n).x == element.x && tabuList.get(n).y == element.y) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

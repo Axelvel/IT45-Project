@@ -25,8 +25,8 @@ public class Main {
 
         //testSol.printAssignation();
         System.out.println("INITIAL SOLUTION : ");
-        //testSol.showSolutionDetails();
-        testSol.printAssignation();
+        testSol.showSolutionDetails();
+        /*testSol.printAssignation();
 
         System.out.println("COPY : ");
         Solution testCopie = testSol;
@@ -36,9 +36,9 @@ public class Main {
         testSol.setAssignation(0,15);
         testSol.printAssignation();
         testCopie.printAssignation();
+*/
 
-
-        //testSol = testSearch.tabuSearch(testSol, 3);
+        testSol = testSearch.tabuSearch(testSol, 3);
 
 
     }
