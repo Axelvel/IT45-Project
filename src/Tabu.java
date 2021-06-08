@@ -27,84 +27,34 @@ public class Tabu {
 
     public  Solution tabuSearch(Solution sol, long t) {
 
-        if (tabuList != null) {
-            tabuList.clear();
-        }
-
-        bestSolution = sol;
+        if (tabuList != null) tabuList.clear();
 
         if (sol.isValid()) {
             bestSolution = sol;
         } else {
             System.out.println("Initial solution is not valid");
-            return sol;
+            return null;
         }
-
-        System.out.print("\ntest");
-
-
-        //Compute matrix
-        //Determine best move to make and check the tabuList
-        //Change the current solution
-        //Check if eval(solution) > eval(bestSolution)
-        //When time is up, stop the search
-
-
-/*
-        Runnable runnable = () -> {
-
-            System.out.println("Thread is running");
-            Solution currentSol = sol;
-
-            while(true) {
-
-                //System.out.println("Assignation matrix : ");
-                double[][] matrix = computeMatrix(currentSol);
-                //Utils.printMatrix(matrix);
-                Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-                System.out.println(matrix[optimalMove.x][optimalMove.y]);
-
-                //currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
-
-                if (currentSol.evalSolution() < bestSolution.evalSolution()) {
-                    bestSolution = currentSol;
-                }
-            }
-
-
-
-
-
-        };
-
-        Thread thread = new Thread(runnable);
-        thread.start();
-        
-        long startingTime = System.currentTimeMillis();
-
-
-        while (System.currentTimeMillis() - startingTime < t * 1000) {
-            //System.out.println(System.currentTimeMillis() - startingTime);
-        }
-
-        //Kill the Thread
-        thread.interrupt();
-
- */
         Solution currentSol = sol;
 
+        System.out.print("\nTABU SEARCH");
+
+
+
+
         for (int n = 0; n < 150; n++) {
+            System.out.println("\nIteration "+ n);
             //System.out.println("Assignation matrix : ");
             double[][] matrix = computeMatrix(currentSol);
             //Utils.printMatrix(matrix);
+
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
             //System.out.println(matrix[optimalMove.x][optimalMove.y]);
 
-            currentSol.setAssignation(optimalMove.y, optimalMove.x); //check
+            currentSol.setAssignation(optimalMove.y, optimalMove.x); //TODO : check if this changes bestSolution as well
 
-            System.out.println("\nBlabla\n");
-            System.out.println(currentSol.evalSolution());
-            System.out.println(bestSolution.evalSolution());
+            System.out.println("Current solution eval : " + currentSol.evalSolution());
+            System.out.println("Best solution eval : " + bestSolution.evalSolution());
 
             if (currentSol.evalSolution() < bestSolution.evalSolution()) {
                 System.out.println("\n================== SWITCH ===================\n");
@@ -113,21 +63,6 @@ public class Tabu {
 
 
         }
-/*
-        //System.out.println("Assignation matrix : ");
-        double[][] matrix = computeMatrix(sol);
-        Utils.printMatrix(matrix);
-        Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-        optimalMove.print();
-        System.out.println("\nV1 : " + matrix[optimalMove.x][optimalMove.y]);
-        System.out.println("\nV2 : " + matrix[optimalMove.y][optimalMove.x]);
-
-
- */
-
-
-
-
         System.out.println("\n***** Done *****\n");
 
         bestSolution.showSolutionDetails();

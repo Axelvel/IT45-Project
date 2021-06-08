@@ -23,22 +23,23 @@ public class Main {
         Tabu testSearch = new Tabu(1500);
         Solution testSol = Tabu.getClosestNeighborSol();
 
-
-
-        testSol.printAssignation();
-        testSol.showSolutionDetails();
-        System.out.print("\ntest");
-
-
-        testSol = testSearch.tabuSearch(testSol, 3);
-
-
         //testSol.printAssignation();
+        System.out.println("INITIAL SOLUTION : ");
         //testSol.showSolutionDetails();
-/*
-        System.out.println("Assignation matrix : ");
-        double[][] matrix = testSearch.computeMatrix(testSol);
-        Utils.printMatrix(matrix);
-*/
+        testSol.printAssignation();
+
+        System.out.println("COPY : ");
+        Solution testCopie = testSol;
+        testCopie.printAssignation();
+
+        System.out.println("TEST : ");
+        testSol.setAssignation(0,15);
+        testSol.printAssignation();
+        testCopie.printAssignation();
+
+
+        //testSol = testSearch.tabuSearch(testSol, 3);
+
+
     }
 }

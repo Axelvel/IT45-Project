@@ -41,7 +41,7 @@ public class Solution {
         if(Utils.contains(assignation,-1)) return false;
 
         //check if all schedules are valid
-        for(int i = 1;i <= Generator.NBR_INTERFACES;i++){
+        for(int i = 0;i < Generator.NBR_INTERFACES;i++){
             if(!isScheduleValid(i)) return false;
         }
 
@@ -235,12 +235,12 @@ public class Solution {
         System.out.println("\nValue of the solution :");
         System.out.println(evalSolution());
 
-        //give an example of schedule for the 3 first interaces and their work time
+        /*//give an example of schedule for the 3 first interaces and their work time
         System.out.println("\nSchedule examples :");
         for(int j = 0; j < 3;j++){
             List<Formation> schedule = generateSchedule(j);
             System.out.println("Interface "+j+" : "+schedule);
-        }
+        }*/
     }
 
     public int[] getAssignationArray(){ return assignation; }
