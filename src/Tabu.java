@@ -208,7 +208,7 @@ public class Tabu {
                         break;
                     }
                 }else{
-                    System.out.println("skill inegaux");
+                    System.out.println("Skill inegaux - > Form "+f.getId()+" == Inter "+i.getId());
                 }
 
             }
