@@ -14,6 +14,8 @@ public class Schedule {
     public Interface getScheduleInterface(){return i;}
 
     public boolean fitInSchedule(Formation f){
+        if(f.getSkill() != i.getSkill()){ return false;}
+
         Solution solutionCopy = new Solution(currentSolution);
         solutionCopy.setAssignation(f.getId(),i.getId());
 

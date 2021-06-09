@@ -203,13 +203,20 @@ public class Solution {
         //give the eval of a solution
         System.out.println("\nValue of the solution :");
         System.out.println(evalSolution());
+        //showSolutionStats();
 
-        /*//give an example of schedule for the 3 first interaces and their work time
-        System.out.println("\nSchedule examples :");
-        for(int j = 0; j < 3;j++){
-            List<Formation> schedule = generateSchedule(j);
-            System.out.println("Interface "+j+" : "+schedule);
-        }*/
+    }
+
+    public void showSolutionStats(){
+        int nbSpecialityValid = 0;
+        int nbSkillValid = 0;
+
+        for(Formation f: Generator.getFormationArray()){
+            if(isSkillValid(f.getId())){nbSkillValid++;}
+        }
+
+        //System.out.println("Number of valid specialities : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
+        System.out.println("Number of valid skills : "+nbSkillValid+"/"+Generator.NBR_FORMATIONS);
     }
 
     public int[] getAssignationArray(){ return assignation; }

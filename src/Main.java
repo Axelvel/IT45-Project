@@ -36,9 +36,14 @@ public class Main {
         testSol.setAssignation(0,15);
         testSol.printAssignation();
         testCopie.printAssignation();
-*/
-        testSol = testSearch.tabuSearch(testSol, 3);
+*/      //testSol.showSolutionStats();
+        //testSol = testSearch.tabuSearch(testSol, 10);
+        //testSol.showSolutionStats();
 
+        testSol.printAssignation();
+        for(int i = 0; i < Generator.NBR_FORMATIONS;i++){
+            System.out.println("F"+i+" : "+Generator.getFormationArray()[i].getSkill() + " - I"+testSol.getAssignation(i)+" : "+Generator.getInterfaceArray()[testSol.getAssignation(i)].getSkill());
+        }
         /*//
         Schedule test = new Schedule(Generator.getInterfaceArray()[2], testSol);
         System.out.println(test);

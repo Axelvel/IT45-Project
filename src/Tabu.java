@@ -198,13 +198,19 @@ public class Tabu {
 
         for(Formation f: Generator.getFormationArray()){
             for(Interface i: Generator.getInterfaceArray()){
-                closestNeighborSol.setAssignation(f.getId(),i.getId());
-                Schedule tempSchedule = new Schedule(i,closestNeighborSol);
-                if(!tempSchedule.isScheduleValid()){
-                    closestNeighborSol.setAssignation(f.getId(), -1);
+                if(f.getSkill() == i.getSkill()){
+                    System.out.println("Form "+f.getId()+" == Inter "+i.getId());
+                    closestNeighborSol.setAssignation(f.getId(),i.getId());
+                    Schedule tempSchedule = new Schedule(i,closestNeighborSol);
+                    if(!tempSchedule.isScheduleValid()){
+                        closestNeighborSol.setAssignation(f.getId(), -1);
+                    }else{
+                        break;
+                    }
                 }else{
-                    break;
+                    System.out.println("skill inegaux");
                 }
+
             }
         }
 
