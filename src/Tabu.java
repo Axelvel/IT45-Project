@@ -100,7 +100,6 @@ public class Tabu {
     }
 
 
-
     /**
      * Creates a matrix with a given solution
      * Each line corresponds to a formation, and each column to an interface
@@ -115,39 +114,36 @@ public class Tabu {
         double dist;
         boolean spe;
 
-        //calculer le schedule
-        //vérifier que itrface a au moins une formation le meme jour de formation
-        //si oui, prend celle qui est juste avant formation et calculer l'heursitique
-        //si non, calculer l'heuristique avec le centre 0
-        for(Formation formation: Generator.getFormationArray()){
-            for(int i = 0;i<Generator.NBR_INTERFACES;i++){
-                //interface's schedule
-                List<Formation> schedule = sol.generateSchedule(i);
+        for(Interface i: Generator.getInterfaceArray()){
+            Schedule schedule = new Schedule(i,sol);
+
+            // Go through every possible formation that can be added to the schedule
+            for(Formation futureFormation: Generator.getFormationArray()){
                 //center of the studied formation
-                Center formationCenter = Generator.getCenterBySpeciality(formation.getSpeciality().getId());
+                Center formationCenter = Generator.getCenterBySpeciality(futureFormation.getSpeciality().getId());
                 //By default, previous center is the beginning center
                 Center prevCenter = Generator.getCenterArray()[0];
 
-                if(schedule.contains(formation)){
-                    mvmtMatrix[formation.getId()][i] = Double.POSITIVE_INFINITY;
+                if(schedule.contains(futureFormation)){
+                    mvmtMatrix[futureFormation.getId()][i.getId()] = Double.POSITIVE_INFINITY;
                 }else{
+                    if(schedule.fitInSchedule(futureFormation)){
 
-                    //ON AJOUTE AU SCHEDULE VITE FAIT, POUR VERIFIER SI CEST VALIDE
-                    int prevAssignation = sol.getAssignation(formation.getId());
-                    sol.setAssignation(formation.getId(),i);
-                    if(!sol.isScheduleValid(i)){
-                        sol.setAssignation(formation.getId(),prevAssignation);
-                        mvmtMatrix[formation.getId()][i] = Double.POSITIVE_INFINITY;
-                    }else{
-                        sol.setAssignation(formation.getId(),prevAssignation);
-                        for(Formation f:schedule){
-                            if(f.getDay() == formation.getDay() && f.getStartHour() > formation.getEndHour()){
+                        for(Formation f: schedule.getSchedule()){
+                            if(f.getDay() == futureFormation.getDay() && f.getStartHour() > futureFormation.getEndHour()){
                                 prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
                             }
                             dist = Utils.calculateDist(prevCenter,formationCenter);
-                            spe = Generator.getInterfaceArray()[i].getSpecialities().contains(formationCenter.getSpeciality());
-                            mvmtMatrix[formation.getId()][i] = heuristic(dist, spe);
+                            spe = Generator.getInterfaceArray()[i.getId()].getSpecialities().contains(formationCenter.getSpeciality());
+                            mvmtMatrix[futureFormation.getId()][i.getId()] = heuristic(dist, spe);
+
+                            if(schedule.isLastFormationOfTheDay(futureFormation)){
+                                dist = Utils.calculateDist(formationCenter,Generator.getCenterArray()[Generator.NBR_CENTRES_FORMATION]);
+                                mvmtMatrix[futureFormation.getId()][i.getId()] += heuristic(dist, spe);
+                            }
                         }
+                    }else{
+                        mvmtMatrix[futureFormation.getId()][i.getId()] = Double.POSITIVE_INFINITY;
                     }
                 }
             }
@@ -200,12 +196,12 @@ public class Tabu {
         //TODO : implement an easy but valid solution for test purposes
         Solution closestNeighborSol = new Solution();
 
-        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
-            for(int j = 0; j < Generator.NBR_INTERFACES;j++){
-                closestNeighborSol.setAssignation(i,j);
-
-                if(!closestNeighborSol.isScheduleValid(j)){
-                    closestNeighborSol.setAssignation(i, -1);
+        for(Formation f: Generator.getFormationArray()){
+            for(Interface i: Generator.getInterfaceArray()){
+                closestNeighborSol.setAssignation(f.getId(),i.getId());
+                Schedule tempSchedule = new Schedule(i,closestNeighborSol);
+                if(!tempSchedule.isScheduleValid()){
+                    closestNeighborSol.setAssignation(f.getId(), -1);
                 }else{
                     break;
                 }

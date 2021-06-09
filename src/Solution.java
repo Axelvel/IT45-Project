@@ -22,6 +22,7 @@ public class Solution {
         this.assignation = sol.assignation.clone();
     }
 
+
     /**
      * Get the interface assigned to a formation
      * @param f : formation id
@@ -45,9 +46,13 @@ public class Solution {
         if(Utils.contains(assignation,-1)) return false;
 
         //check if all schedules are valid
-        for(int i = 0;i < Generator.NBR_INTERFACES;i++){
-            if(!isScheduleValid(i)) return false;
+        for(Interface i: Generator.getInterfaceArray()){
+            Schedule s = new Schedule(i, this);
+            if(!s.isScheduleValid()) return false;
         }
+        /*for(int i = 0;i < Generator.NBR_INTERFACES;i++){
+            if(!isScheduleValid(i)) return false;
+        }*/
 
         return true; }
 
@@ -77,70 +82,16 @@ public class Solution {
         return Generator.getInterfaceArray()[id].getSpecialities().contains(spe);
     }
 
-    /**
-     * Checks if the generated schedule for the interface is valid
-     * @param i : interface id
-     */
-    public boolean isScheduleValid(int i) {
-        List<Formation> schedule = generateSchedule(i);
-
-        if(schedule.size() == 0){
-            return true;
-        }
-
-        int hours = 0;
-        int startday = schedule.get(0).getStartHour();
-        int endDay;
-
-
-        for (int j = 0; j < schedule.size(); j++) {
-
-
-            hours += (schedule.get(j).getEndHour() - schedule.get(j).getStartHour());
-
-            if (j != 0) {
-                if (schedule.get(j).getDay() == schedule.get(j-1).getDay()) {
-                    if (schedule.get(j-1).getEndHour() > schedule.get(j).getStartHour()) {
-                        //System.out.println(j);
-                        //System.out.println("Pas compatible");
-                        return false;
-                    } else {
-                        endDay = schedule.get(j).getEndHour();
-
-                        if (endDay - startday >= 12) {
-                            //System.out.println("Amplitude horraire journée dépassée");
-                            return false;
-                        }
-
-                        if (hours >= 35) {
-                            //System.out.println("+35 heures semaine");
-                            return false;
-                        }
-
-                        if (schedule.get(j).getStartHour() > 12 && (schedule.get(j).getStartHour() - schedule.get(j-1).getEndHour()) < 1) {
-                            //System.out.println("Bouffe");
-                            return false;
-                        }
-                    }
-                } else {
-                    startday = schedule.get(j).getStartHour();
-                }
-            }
-
-        }
-        //System.out.println("Hours : " + hours);
-        return true;
-    }
 
     /**
      * Returns the indexes of the formations assigned to an interface
      * @param i : interface id
      * @return list of indexes
      */
-    public List<Integer> getInterfaceIndexes(int i) {
+    public List<Integer> getInterfaceIndexes(Interface i) {
         List<Integer> indexList = new ArrayList<>();
         for (int j= 0; j < assignation.length; j++) {
-            if (assignation[j] == i) {
+            if (assignation[j] == i.getId()) {
                 indexList.add(j);
             }
         }
@@ -161,7 +112,7 @@ public class Solution {
      * Neatly prints the schedule of an interface
      * @param i : interface id
      */
-    public List<Formation> generateSchedule(int i){
+    public List<Formation> generateSchedule(Interface i){
         List<Integer> indexList = getInterfaceIndexes(i);
         List<Formation> schedule = new ArrayList<>();
 
@@ -188,6 +139,20 @@ public class Solution {
         for(int i = 0; i < assignation.length;i++){ if(!isSpecialtyValid(i)){penalties++;} }
 
         //Compute total distance ran by an interface and total distance ran by all interfaces
+        for(Interface i:Generator.getInterfaceArray()){
+            distByInterface[i.getId()] = 0;
+            List<Formation> schedule = generateSchedule(i);
+            Center prevCenter = Generator.getCenterArray()[0];
+            for(Formation f : schedule){
+                Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
+                distByInterface[i.getId()] += Utils.calculateDist(prevCenter,currentCenter);
+                prevCenter = currentCenter;
+            }
+            distByInterface[i.getId()] += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
+            totalDist += distByInterface[i.getId()];
+        }
+
+/*
         for(int i = 0;i<Generator.NBR_INTERFACES;i++){
             distByInterface[i] = 0;
             List<Formation> schedule = generateSchedule(i);
@@ -200,7 +165,7 @@ public class Solution {
             distByInterface[i] += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
             totalDist += distByInterface[i];
         }
-
+*/
         double avrDist = totalDist/Generator.NBR_INTERFACES;
         double factor = totalDist/Generator.NBR_FORMATIONS;
         double strdDev;

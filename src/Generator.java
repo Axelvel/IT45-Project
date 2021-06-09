@@ -37,7 +37,7 @@ public class Generator {
 
     private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
-            interfaceArray[i] = new Interface(generateCompetence(), generateSpecialities());
+            interfaceArray[i] = new Interface(i,generateCompetence(), generateSpecialities());
         }
     }
 

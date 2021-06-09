@@ -37,7 +37,18 @@ public class Main {
         testSol.printAssignation();
         testCopie.printAssignation();
 */
-
         testSol = testSearch.tabuSearch(testSol, 3);
+
+        /*//
+        Schedule test = new Schedule(Generator.getInterfaceArray()[2], testSol);
+        System.out.println(test);
+        System.out.println("\n");
+        System.out.println((Generator.getFormationArray()[2]));
+        //test.getSchedule().add((Generator.getFormationArray()[2]));
+        System.out.println(test.fitInSchedule((Generator.getFormationArray()[2])));
+        //test.addToSchedule(Generator.getFormationArray()[2]);
+        //System.out.println(test);
+        //System.out.println(test.contains((Generator.getFormationArray()[2])));*/
+
     }
 }
