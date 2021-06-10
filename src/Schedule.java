@@ -14,7 +14,7 @@ public class Schedule {
     public Interface getScheduleInterface(){return i;}
 
     public boolean fitInSchedule(Formation f){
-        if(f.getSkill() != i.getSkill()){ return false;}
+        if(f.getSkill() != i.getSkill() && i.getSkill() != 2){ return false;}
 
         Solution solutionCopy = new Solution(currentSolution);
         solutionCopy.setAssignation(f.getId(),i.getId());
@@ -62,10 +62,14 @@ public class Schedule {
 
         for (int j = 0; j < schedule.size(); j++) {
 
+            if (schedule.get(j).getSkill() != i.getSkill() && i.getSkill() != 2) {
+                return false;
+            }
 
             hours += (schedule.get(j).getEndHour() - schedule.get(j).getStartHour());
 
             if (j != 0) {
+
                 if (schedule.get(j).getDay() == schedule.get(j-1).getDay()) {
                     if (schedule.get(j-1).getEndHour() > schedule.get(j).getStartHour()) {
                         return false;
@@ -84,6 +88,7 @@ public class Schedule {
 
                             return false;
                         }
+
                     }
                 } else {
                     startday = schedule.get(j).getStartHour();
