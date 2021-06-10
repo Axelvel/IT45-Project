@@ -20,11 +20,9 @@ public enum Day {
     Day(int id) {
         this.id = id;
     }
-
     public int getId(){
         return this.id;
     }
-
     public static Day valueOfId(int id) {
         return byId.get(id);
     }

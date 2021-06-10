@@ -1,10 +1,9 @@
-import java.awt.desktop.SystemSleepEvent;
-import java.awt.event.PaintEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
+//TODO : clean code
 
 /**
  * Implement the tabu class, used to resolve our optimization problem
@@ -13,9 +12,7 @@ import java.util.Random;
 public class Tabu {
 
     private Solution bestSolution;
-    private double[][] matrix;
     private List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
-
     private int tabuLength;
 
     public Tabu(int tabuLength) {
@@ -24,25 +21,19 @@ public class Tabu {
         } else {
             System.out.println("tabuLength needs to be > 0");
         }
-
     }
-
 
     public  Solution tabuSearch(Solution sol, long t) {
 
         //Nombre de changements de la bestSolution
         int nbSwitchs = 0;
 
-        if (tabuList != null) {
-            tabuList.clear();
-        }
+        if (tabuList != null) tabuList.clear();
 
         bestSolution = new Solution(sol);
+        Solution currentSol = new Solution(sol);
 
         System.out.println("\nInitial sol = " + sol.evalSolution());
-        //System.out.println("BestSol = " + bestSolution.evalSolution());
-
-        Solution currentSol = new Solution(sol);
 
 
         for (int n = 0; n < 10000; n++) {
@@ -53,9 +44,6 @@ public class Tabu {
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
 
             if (optimalMove.x == null || optimalMove.y == null) {
-                //System.out.println("Search stopped (No more solutions)\n");
-                //System.out.println("Initial sol = " + sol.evalSolution());
-                //System.out.println("BestSol = " + bestSolution.evalSolution());
 
                 //Aspiration critera
                 optimalMove.x = tabuList.get(0).x;
@@ -63,13 +51,11 @@ public class Tabu {
                 double min = matrix[optimalMove.x][optimalMove.y];
 
                 for (int i =1; i < tabuList.size(); i++) {
-
                     if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
                         optimalMove.x = tabuList.get(i).x;
                         optimalMove.y = tabuList.get(i).y;
                     }
                 }
-                //return bestSolution;
             }
             currentSol.setAssignation(optimalMove.x, optimalMove.y);
 
@@ -89,7 +75,6 @@ public class Tabu {
         System.out.println("Nombre de changements de bestSolution: = " + nbSwitchs + "\n");
 
         bestSolution.showSolutionDetails();
-        //bestSolution.printAssignation();
 
         System.out.println("\nInitial sol = " + sol.evalSolution());
         System.out.println("BestSol = " + bestSolution.evalSolution());
@@ -106,15 +91,12 @@ public class Tabu {
      * @return
      */
     public double heuristic(double dist, boolean spe) {
-
         double coefficient;
-
         if (spe) {
             coefficient = 1;
         } else {
             coefficient = 2; //TODO: Find right coefficient
         }
-
         return coefficient * dist;
     }
 
@@ -138,7 +120,7 @@ public class Tabu {
 
             // Go through every possible formation that can be added to the schedule
             for(Formation futureFormation: Generator.getFormationArray()){
-                //center of the studied formation
+                //Get the center of the studied formation
                 Center formationCenter = Generator.getCenterBySpeciality(futureFormation.getSpeciality().getId());
                 //By default, previous center is the beginning center
                 Center prevCenter = Generator.getCenterArray()[0];
@@ -149,17 +131,19 @@ public class Tabu {
                     if(schedule.fitInSchedule(futureFormation)){
 
                         for(Formation f: schedule.getSchedule()){
+                            //if a formation is earlier that day, set previous center to the center of that formation
                             if(f.getDay() == futureFormation.getDay() && f.getStartHour() > futureFormation.getEndHour()){
                                 prevCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
                             }
                             dist = Utils.calculateDist(prevCenter,formationCenter);
-                            spe = Generator.getInterfaceArray()[i.getId()].getSpecialities().contains(formationCenter.getSpeciality());
-                            mvmtMatrix[futureFormation.getId()][i.getId()] = heuristic(dist, spe);
+                            spe = i.getSpecialities().contains(formationCenter.getSpeciality());
 
+                            //if a formation is the last of the day, add the distance to the final center
                             if(schedule.isLastFormationOfTheDay(futureFormation)){
-                                dist = Utils.calculateDist(formationCenter,Generator.getCenterArray()[Generator.NBR_CENTRES_FORMATION]);
-                                mvmtMatrix[futureFormation.getId()][i.getId()] += heuristic(dist, spe);
+                                dist += Utils.calculateDist(formationCenter,Generator.getCenterArray()[Generator.NBR_CENTRES_FORMATION]);
                             }
+
+                            mvmtMatrix[futureFormation.getId()][i.getId()] = heuristic(dist, spe);
                         }
                     }else{
                         mvmtMatrix[futureFormation.getId()][i.getId()] = Double.POSITIVE_INFINITY;
@@ -170,29 +154,6 @@ public class Tabu {
         return mvmtMatrix;
     }
 
-     /** Find solutions close to the one given in the parameters by trying to
-     * optimize it
-     * @param currentSol : current solution
-     * @return neighborSol : list of better solution
-     */
-    public List<Solution> computeNeighborhood(Solution currentSol){
-        List<Solution> neighborhood = null;
-
-        //Calculer la matrice
-        double[][] solMatrix = computeMatrix(currentSol);
-        //A l'aide de cette matrice, trouver des solutions voisines
-        //Si l'eval de ces solutions est meilleure, ajouter à la lsite
-
-        //voir 2-opt ?
-        //Solution initiale
-        //DO
-        //calculer solution voisine
-        //Si sa valeur est mieux alors
-        //la valeur initiale prend sa valeur
-        //Jusqu’à « critère d’arrêt atteint »
-        
-        return neighborhood;
-    }
 
     /**
      * Add a movement to the tabu list
@@ -201,30 +162,26 @@ public class Tabu {
 
     public void addToTabuList(Utils.Pair<Integer, Integer> i) {
         tabuList.add(i);
-        if (tabuList.size() >= tabuLength) {
-            tabuList.remove(0);
-        }
+        if (tabuList.size() >= tabuLength) tabuList.remove(0);
     }
 
     /**
      * Find the fastest and easiest valid solution, without caring about
-     * optimization. Mostly used for test.
+     * optimization. Mostly used to find an initial solution.
      * @return a possible solution
      */
     public static Solution getClosestNeighborSol(){
-        //TODO : implement an easy but valid solution for test purposes
         Solution closestNeighborSol = new Solution();
 
         int i = 0;
 
         for (int f = 0; f < Generator.getFormationArray().length; f++) {
-           Formation form = Generator.getFormationArray()[f];
-
            while (closestNeighborSol.getAssignation(f) == -1) {
-               if (i >= Generator.NBR_INTERFACES) {
-                   i = 0;
-               }
+               if (i >= Generator.NBR_INTERFACES) i = 0;
+
                closestNeighborSol.setAssignation(f,i);
+
+               //check if this assignation is valid
                Interface inter = Generator.getInterfaceArray()[i];
                Schedule tempSchedule = new Schedule(inter, closestNeighborSol);
                if (!tempSchedule.isScheduleValid()) {
@@ -251,11 +208,9 @@ public class Tabu {
 
         for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
             for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
-
                 if (matrix[i][j] < minValue) {
                     if (!isTabu(new Utils.Pair<>(i, j))) {
                         minValue = matrix[i][j];
-                        //
                         minimum.x = i;
                         minimum.y = j;
                     }
@@ -264,17 +219,16 @@ public class Tabu {
         }
 
         addToTabuList(minimum);
-
         return minimum;
     }
 
+    //TODO : add comments
     public boolean isTabu(Utils.Pair<Integer, Integer> element) {
         for (int n = 0; n < tabuList.size(); n++) {
             if (tabuList.get(n).x == element.x && tabuList.get(n).y == element.y) {
                 return true;
             }
         }
-
         return false;
     }
 

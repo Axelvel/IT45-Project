@@ -20,33 +20,9 @@ public final class Utils {
 
         public Pair() { this.x = null; this.y = null; }
 
-        public void print() { System.out.println("(x: " + x + ",y: " + y + ")"); }
+        public String toString(){ return "(x: " + x + ",y: " + y + ")"; }
     }
 
-    /**
-     * Compute the distance between each centers in a matrix
-     * @return double[][] M : distance matrix
-     */
-    public static double[][] computeDistMatrix() {
-        double[][] M = new double[Generator.NBR_CENTRES_FORMATION+1][Generator.NBR_CENTRES_FORMATION+1];
-
-        for (int i = 0; i <= Generator.NBR_CENTRES_FORMATION; i++) {
-            for (int j = 0; j <= Generator.NBR_CENTRES_FORMATION; j++) {
-                Center ca = Generator.getCenterArray()[i];
-                Center cb = Generator.getCenterArray()[j];
-
-                if (ca != cb) {
-                    M[i][j] = calculateDist(ca,cb);
-                } else {
-                    M[i][j] = 0;
-                }
-
-
-            }
-        }
-
-        return M;
-    }
 
     /**
      * Calculate the distance between two centers

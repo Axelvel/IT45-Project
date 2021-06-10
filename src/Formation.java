@@ -9,8 +9,8 @@ public class Formation {
     private final Speciality speciality;
     private final int skill;
     private final Day day;
-    private final int start; //Double ?
-    private final int end; //Double .
+    private final int start;
+    private final int end;
 
     public Formation(int id, Speciality speciality, int skill, Day day, int start, int end) {
         this.id = id;
@@ -21,9 +21,6 @@ public class Formation {
         this.end = end;
     }
 
-    public void print() {
-        System.out.println(id + "," + speciality + ", " + skill + ", " + day + ", " + start + ", " + end);
-    }
 
     public String toString(){
         return "F"+id+" : " + day + " -> " + start + "h-" + end + "h";

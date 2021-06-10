@@ -1,6 +1,9 @@
 
 import java.util.*;
 
+/**
+ * Generator class used to create an instance of a problem
+ */
 public class Generator {
 
     public static int NBR_APPRENANTS = 80;
@@ -19,20 +22,16 @@ public class Generator {
 
     private final Random rand;
 
-    private static double[][] distanceMatrix;
-
     public Generator() {
         rand = new Random();
         generateInterfaces();
         generateCenters();
         generateFormations();
-        distanceMatrix = Utils.computeDistMatrix();
     }
 
     public static Interface[] getInterfaceArray(){ return interfaceArray; }
     public static Center[] getCenterArray(){return centerArray;}
     public static Formation[] getFormationArray(){return formationArray;}
-    public static double[][] getDistanceMatrix(){return distanceMatrix;}
     public static Center getCenterBySpeciality(int i){return centerArray[i];}
 
     private void generateInterfaces() {

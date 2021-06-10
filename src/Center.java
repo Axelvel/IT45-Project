@@ -15,14 +15,6 @@ public class Center {
     public Utils.Pair<Integer, Integer> getCoord() {
         return coord;
     }
-
-    public void print() {
-        System.out.println(speciality + " : (" + coord.x + "," + coord.y + ")");
-    }
-
-    public String toString(){
-        return speciality+" : (" + coord.x + ", " + coord.y + ")";
-    }
     public Speciality getSpeciality(){ return speciality; }
-    public Utils.Pair<Integer, Integer> getCoordinates(){ return coord; }
+    public String toString(){ return "Center " +speciality+" : (" + coord.x + ", " + coord.y + ")"; }
 }

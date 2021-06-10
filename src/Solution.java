@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+//TODO : clean code
+
 /**
  * Class representing a solution to the problem
  * Assignation holds the number of the interface for the
@@ -21,7 +23,7 @@ public class Solution {
     public Solution(Solution sol) {
         this.assignation = sol.assignation.clone();
     }
-
+    public int[] getAssignationArray(){ return assignation; }
 
     /**
      * Get the interface assigned to a formation
@@ -50,8 +52,8 @@ public class Solution {
             Schedule s = new Schedule(i, this);
             if(!s.isScheduleValid()) return false;
         }
-
-        return true; }
+        return true;
+    }
 
     /**
      * Checks if the interface assigned to the formation has the right skill
@@ -96,17 +98,8 @@ public class Solution {
     }
 
 
-    /**
-     * Print the content of the assignation array
-     */
-    public void printAssignation(){
-        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
-            System.out.println("F"+i+" - "+getAssignation(i));
-        }
-    }
-
-    /**
-     * Neatly prints the schedule of an interface
+    /** //TODO : replace with schedule class
+     * Creates the schedule of an interface
      * @param i : interface id
      */
     public List<Formation> generateSchedule(Interface i){
@@ -129,8 +122,8 @@ public class Solution {
      */
     public double evalSolution(){
         int penalties = 0;
-        double totalDist = 0;
-        double[] distByInterface = new double[Generator.NBR_INTERFACES];
+        double totalDist = 0; //total distance run by all interfaces
+        double[] distByInterface = new double[Generator.NBR_INTERFACES]; //distance run by each interface
 
         //Compute penalties
         for(int i = 0; i < assignation.length;i++){ if(!isSpecialtyValid(i)){penalties++;} }
@@ -149,20 +142,6 @@ public class Solution {
             totalDist += distByInterface[i.getId()];
         }
 
-/*
-        for(int i = 0;i<Generator.NBR_INTERFACES;i++){
-            distByInterface[i] = 0;
-            List<Formation> schedule = generateSchedule(i);
-            Center prevCenter = Generator.getCenterArray()[0];
-            for(Formation f : schedule){
-                Center currentCenter = Generator.getCenterBySpeciality(f.getSpeciality().getId()+1);
-                distByInterface[i] += Utils.calculateDist(prevCenter,currentCenter);
-                prevCenter = currentCenter;
-            }
-            distByInterface[i] += Utils.calculateDist(prevCenter,Generator.getCenterArray()[0]);
-            totalDist += distByInterface[i];
-        }
-*/
         double avrDist = totalDist/Generator.NBR_INTERFACES;
         double factor = totalDist/Generator.NBR_FORMATIONS;
         double strdDev;
@@ -210,13 +189,24 @@ public class Solution {
 
         for(Formation f: Generator.getFormationArray()){
             if(isSkillValid(f.getId())){nbSkillValid++;}
+            if(isSpecialtyValid(f.getId())){nbSpecialityValid++;}
         }
 
-        //System.out.println("Number of valid specialities : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
         System.out.println("Number of valid skills : "+nbSkillValid+"/"+Generator.NBR_FORMATIONS);
+        System.out.println("Number of valid specialityes : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
     }
 
-    public int[] getAssignationArray(){ return assignation; }
+    /**
+     * Print the content of the assignation array
+     */
+    public String toString(){
+        String rslt = "ASSIGNATIONS :\n";
+        for(int i = 0;i < Generator.NBR_FORMATIONS;i++){
+            rslt += "F"+i+" - "+getAssignation(i) +"\n";
+        }
+        return rslt;
+    }
+
 
 }
 

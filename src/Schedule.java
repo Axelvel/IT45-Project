@@ -1,9 +1,15 @@
 import java.util.List;
 
+/**
+ * This class demonstrates a schedule by a list of formation
+ * It allows the use of multiple methods useful for the
+ * tabu search
+ */
 public class Schedule {
     public List<Formation> schedule;
     private Interface i;
     private Solution currentSolution;
+
     public Schedule(Interface i, Solution currentSol){
         this.i = i;
         this.schedule = currentSol.generateSchedule(i);
@@ -11,8 +17,12 @@ public class Schedule {
     }
 
     public List<Formation> getSchedule(){return schedule;}
-    public Interface getScheduleInterface(){return i;}
 
+    /**
+     * Check if a formation can be added in a schedule
+     * @param f : formation
+     * @return true if it fits, false if not
+     */
     public boolean fitInSchedule(Formation f){
         if(f.getSkill() != i.getSkill() && i.getSkill() != 2){ return false;}
 
@@ -30,8 +40,18 @@ public class Schedule {
         return false;
     }
 
+    /**
+     * Check if a formation is already in the schedule
+     * @param f : formation
+     * @return : true if yes, false if not
+     */
     public boolean contains(Formation f){ return schedule.contains(f); }
 
+    /**
+     * Check if a formation is in the last time slot of the day
+     * @param f : formation
+     * @return true if yes, false if not
+     */
     public boolean isLastFormationOfTheDay(Formation f){
         int day = f.getDay().getId();
         for(Formation formation: schedule){
