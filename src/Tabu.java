@@ -3,6 +3,7 @@ import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -30,7 +31,7 @@ public class Tabu {
     public  Solution tabuSearch(Solution sol, long t) {
 
         //Nombre de changements de la bestSolution
-        int z = 0;
+        int nbSwitchs = 0;
 
         if (tabuList != null) {
             tabuList.clear();
@@ -44,7 +45,7 @@ public class Tabu {
         Solution currentSol = new Solution(sol);
 
 
-        for (int n = 0; n < 5000; n++) {
+        for (int n = 0; n < 10000; n++) {
             System.out.println("\nIteration "+ n);
 
             double[][] matrix = computeMatrix(currentSol);
@@ -52,10 +53,23 @@ public class Tabu {
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
 
             if (optimalMove.x == null || optimalMove.y == null) {
-                System.out.println("Search stopped (No more solutions)\n");
-                System.out.println("Initial sol = " + sol.evalSolution());
-                System.out.println("BestSol = " + bestSolution.evalSolution());
-                return bestSolution;
+                //System.out.println("Search stopped (No more solutions)\n");
+                //System.out.println("Initial sol = " + sol.evalSolution());
+                //System.out.println("BestSol = " + bestSolution.evalSolution());
+
+                //Aspiration critera
+                optimalMove.x = tabuList.get(0).x;
+                optimalMove.y = tabuList.get(0).y;
+                double min = matrix[optimalMove.x][optimalMove.y];
+
+                for (int i =1; i < tabuList.size(); i++) {
+
+                    if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
+                        optimalMove.x = tabuList.get(i).x;
+                        optimalMove.y = tabuList.get(i).y;
+                    }
+                }
+                //return bestSolution;
             }
             currentSol.setAssignation(optimalMove.x, optimalMove.y);
 
@@ -65,14 +79,14 @@ public class Tabu {
 
             if (currentSol.evalSolution() < bestSolution.evalSolution()) {
                 System.out.println("\n================== SWITCH ===================\n");
-                z++;
+                nbSwitchs++;
                 bestSolution = new Solution(currentSol);
             }
         }
 
         System.out.println("\n***** Done *****\n");
 
-        System.out.println("Nombre de changements de bestSolution: = " + z + "\n");
+        System.out.println("Nombre de changements de bestSolution: = " + nbSwitchs + "\n");
 
         bestSolution.showSolutionDetails();
         //bestSolution.printAssignation();
@@ -98,7 +112,7 @@ public class Tabu {
         if (spe) {
             coefficient = 1;
         } else {
-            coefficient = 2; //TODO: Find right coeficient
+            coefficient = 2; //TODO: Find right coefficient
         }
 
         return coefficient * dist;
