@@ -50,9 +50,6 @@ public class Solution {
             Schedule s = new Schedule(i, this);
             if(!s.isScheduleValid()) return false;
         }
-        /*for(int i = 0;i < Generator.NBR_INTERFACES;i++){
-            if(!isScheduleValid(i)) return false;
-        }*/
 
         return true; }
 
@@ -64,7 +61,7 @@ public class Solution {
         int id = this.getAssignation(f);
         int skill = Generator.getFormationArray()[f].getSkill();
 
-        if (Generator.getInterfaceArray()[id].getSkill() == skill) {
+        if (Generator.getInterfaceArray()[id].getSkill() == skill || Generator.getInterfaceArray()[id].getSkill() == 2 ) {
             return true;
         } else {
             return false;
