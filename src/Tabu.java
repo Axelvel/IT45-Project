@@ -1,3 +1,4 @@
+import java.awt.desktop.SystemSleepEvent;
 import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,20 +38,26 @@ public class Tabu {
 
         bestSolution = new Solution(sol);
 
-        System.out.println("\n\nInitial sol = " + sol.evalSolution());
-        System.out.println("\nBestSol = " + bestSolution.evalSolution());
+        System.out.println("\nInitial sol = " + sol.evalSolution());
+        //System.out.println("BestSol = " + bestSolution.evalSolution());
 
         Solution currentSol = new Solution(sol);
 
 
-        for (int n = 0; n < 150; n++) {
+        for (int n = 0; n < 5000; n++) {
             System.out.println("\nIteration "+ n);
-            //System.out.println("Assignation matrix : ");
+
             double[][] matrix = computeMatrix(currentSol);
-            //Utils.printMatrix(matrix);
 
             Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
-            currentSol.setAssignation(optimalMove.x, optimalMove.y); //TODO : check if this changes bestSolution as well
+
+            if (optimalMove.x == null || optimalMove.y == null) {
+                System.out.println("Search stopped (No more solutions)\n");
+                System.out.println("Initial sol = " + sol.evalSolution());
+                System.out.println("BestSol = " + bestSolution.evalSolution());
+                return bestSolution;
+            }
+            currentSol.setAssignation(optimalMove.x, optimalMove.y);
 
             System.out.println("Current solution eval : " + currentSol.evalSolution());
             System.out.println("Best solution eval : " + bestSolution.evalSolution());
@@ -70,10 +77,8 @@ public class Tabu {
         bestSolution.showSolutionDetails();
         //bestSolution.printAssignation();
 
-        System.out.println("Initial sol = " + sol.evalSolution());
+        System.out.println("\nInitial sol = " + sol.evalSolution());
         System.out.println("BestSol = " + bestSolution.evalSolution());
-
-        System.out.println(bestSolution.isValid());
 
         return bestSolution;
     }
@@ -93,7 +98,7 @@ public class Tabu {
         if (spe) {
             coefficient = 1;
         } else {
-            coefficient = 1.4;
+            coefficient = 2; //TODO: Find right coeficient
         }
 
         return coefficient * dist;
@@ -196,22 +201,23 @@ public class Tabu {
         //TODO : implement an easy but valid solution for test purposes
         Solution closestNeighborSol = new Solution();
 
-        for(Formation f: Generator.getFormationArray()){
-            for(Interface i: Generator.getInterfaceArray()){
-                if(f.getSkill() == i.getSkill()){
-                    System.out.println("Form "+f.getId()+" == Inter "+i.getId());
-                    closestNeighborSol.setAssignation(f.getId(),i.getId());
-                    Schedule tempSchedule = new Schedule(i,closestNeighborSol);
-                    if(!tempSchedule.isScheduleValid()){
-                        closestNeighborSol.setAssignation(f.getId(), -1);
-                    }else{
-                        break;
-                    }
-                }else{
-                    System.out.println("Skill inegaux - > Form "+f.getId()+" == Inter "+i.getId());
-                }
+        int i = 0;
 
-            }
+        for (int f = 0; f < Generator.getFormationArray().length; f++) {
+           Formation form = Generator.getFormationArray()[f];
+
+           while (closestNeighborSol.getAssignation(f) == -1) {
+               if (i >= Generator.NBR_INTERFACES) {
+                   i = 0;
+               }
+               closestNeighborSol.setAssignation(f,i);
+               Interface inter = Generator.getInterfaceArray()[i];
+               Schedule tempSchedule = new Schedule(inter, closestNeighborSol);
+               if (!tempSchedule.isScheduleValid()) {
+                   closestNeighborSol.setAssignation(f, -1);
+                   i++;
+               }
+           }
         }
 
         return closestNeighborSol;
@@ -239,10 +245,7 @@ public class Tabu {
                         minimum.x = i;
                         minimum.y = j;
                     }
-
-
                 }
-
             }
         }
 
