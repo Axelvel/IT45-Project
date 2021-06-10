@@ -20,12 +20,12 @@ public class Main {
         System.out.println("\nDISTANCES :");
         Utils.printMatrix(instance.getDistanceMatrix());*/
 
-        Tabu testSearch = new Tabu(1500);
+        Tabu testSearch = new Tabu(200);
         Solution testSol = Tabu.getClosestNeighborSol();
 
         //testSol.printAssignation();
         System.out.println("INITIAL SOLUTION : ");
-        testSol.showSolutionDetails();
+        //testSol.showSolutionDetails();
         /*testSol.printAssignation();
 
         System.out.println("COPY : ");
@@ -37,13 +37,20 @@ public class Main {
         testSol.printAssignation();
         testCopie.printAssignation();
 */      //testSol.showSolutionStats();
-        //testSol = testSearch.tabuSearch(testSol, 10);
+        testSol = testSearch.tabuSearch(testSol, 10);
         //testSol.showSolutionStats();
 
-        testSol.printAssignation();
+        //testSol.printAssignation();
+        /*
         for(int i = 0; i < Generator.NBR_FORMATIONS;i++){
             System.out.println("F"+i+" : "+Generator.getFormationArray()[i].getSkill() + " - I"+testSol.getAssignation(i)+" : "+Generator.getInterfaceArray()[testSol.getAssignation(i)].getSkill());
         }
+
+         */
+
+        System.out.println("\nSolution valid : " + testSol.isValid());
+
+        testSol.showSolutionStats();
         /*//
         Schedule test = new Schedule(Generator.getInterfaceArray()[2], testSol);
         System.out.println(test);
