@@ -19,7 +19,6 @@ public class Main {
 
         System.out.println("############ TABU SEARCH EXAMPLE ############");
 
-
         Generator instance = new Generator(nbApprenants);
         if(showDetails){
             System.out.println("INSTANCE :");
