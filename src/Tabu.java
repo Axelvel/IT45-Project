@@ -1,9 +1,11 @@
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 //TODO : clean code
+//TODO : timer
 
 /**
  * Implement the tabu class, used to resolve our optimization problem
@@ -23,7 +25,14 @@ public class Tabu {
         }
     }
 
-    public  Solution tabuSearch(Solution sol, long t) {
+    /**
+     * Starts a tabu search to optimize a solution
+     * @param sol : initial solution
+     * @param t : length of the tabu list //TODO: check
+     * @param showDetails : if set to true, print details of the search
+     * @return an optimized solution
+     */
+    public Solution tabuSearch(Solution sol, long t, boolean showDetails) throws IOException {
 
         //Nombre de changements de la bestSolution
         int nbSwitchs = 0;
@@ -33,11 +42,10 @@ public class Tabu {
         bestSolution = new Solution(sol);
         Solution currentSol = new Solution(sol);
 
-        System.out.println("\nInitial sol = " + sol.evalSolution());
-
+        if(showDetails) System.out.println("\nInitial solution = " + sol.evalSolution());
 
         for (int n = 0; n < 10000; n++) {
-            System.out.println("\nIteration "+ n);
+            if(showDetails) System.out.println("\nIteration n°"+ n);
 
             double[][] matrix = computeMatrix(currentSol);
 
@@ -59,26 +67,25 @@ public class Tabu {
             }
             currentSol.setAssignation(optimalMove.x, optimalMove.y);
 
-            System.out.println("Current solution eval : " + currentSol.evalSolution());
-            System.out.println("Best solution eval : " + bestSolution.evalSolution());
+            if(showDetails) System.out.println("Current solution evaluation : " + currentSol.evalSolution());
+            if(showDetails) System.out.println("Best solution evaluation : " + bestSolution.evalSolution());
 
 
             if (currentSol.evalSolution() < bestSolution.evalSolution()) {
-                System.out.println("\n================== SWITCH ===================\n");
+                if(showDetails) System.out.println("\n================== SWITCH ===================\n");
                 nbSwitchs++;
                 bestSolution = new Solution(currentSol);
             }
         }
 
-        System.out.println("\n***** Done *****\n");
+        System.out.println("\n############ SEARCH DONE ############\n");
 
-        System.out.println("Nombre de changements de bestSolution: = " + nbSwitchs + "\n");
+        if(showDetails) System.out.println("Number of best solution switches: = " + nbSwitchs + "\n");
+        System.out.println("Initial solution evaluation = " + sol.evalSolution());
+        System.out.println("Best solution evaluation = " + bestSolution.evalSolution());
 
         bestSolution.showSolutionDetails();
-
-        System.out.println("\nInitial sol = " + sol.evalSolution());
-        System.out.println("BestSol = " + bestSolution.evalSolution());
-
+        //bestSolution.exportSolution();
         return bestSolution;
     }
 

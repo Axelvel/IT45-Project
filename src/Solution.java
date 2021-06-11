@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,26 +163,27 @@ public class Solution {
      * and their work time
      */
     public void showSolutionDetails(){
-        System.out.println("##### SOLUTION DETAILS #####");
+        System.out.println("\n\n##### SOLUTION DETAILS #####");
+
         //list which interface don't have any formations
         System.out.println("Interfaces assigned to a formation : ");
         for(int i = 0; i< Generator.NBR_INTERFACES;i++){
             if(Utils.contains(assignation,i)){
-                System.out.print(i + " - ");
+                System.out.print(i + " ");
             }
         }
 
         System.out.println("\nInterfaces not assigned to a formation : ");
         for(int i = 0; i< Generator.NBR_INTERFACES;i++){
             if(!Utils.contains(assignation,i)){
-                System.out.print(i + " - ");
+                System.out.print(i + " ");
             }
         }
 
         //give the eval of a solution
-        System.out.println("\nValue of the solution :");
-        System.out.println(evalSolution());
-        //showSolutionStats();
+        System.out.println("\nValue of the solution :" + evalSolution());
+        System.out.println("\nStatistics :");
+        showSolutionStats();
 
     }
 
@@ -193,7 +197,7 @@ public class Solution {
         }
 
         System.out.println("Number of valid skills : "+nbSkillValid+"/"+Generator.NBR_FORMATIONS);
-        System.out.println("Number of valid specialityes : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
+        System.out.println("Number of valid specialities : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
     }
 
     /**
@@ -207,6 +211,19 @@ public class Solution {
         return rslt;
     }
 
+    public void exportSolution() throws IOException {
+        File resultFile = new File("results.txt");
+        resultFile.createNewFile();
+
+        FileWriter myWriter = new FileWriter("results.txt",true);
+        String content = "##### NEW SOLUTION INSTANCE #####";
+        content += "\nNombre d'apprenants : " + Generator.NBR_APPRENANTS;
+        content += "\nEvaluation de la solution : " + evalSolution();
+        content += "\nTemps d'éxécution : " + evalSolution();
+        content += "\nNombre de spécialités valides : " + evalSolution() + "/" + Generator.NBR_FORMATIONS;
+        myWriter.write("test!");
+        myWriter.close();
+    }
 
 }
 

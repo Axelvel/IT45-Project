@@ -1,28 +1,37 @@
 
 import java.util.*;
 
+//TODO : re-add distance matrix
 /**
  * Generator class used to create an instance of a problem
  */
 public class Generator {
 
-    public static int NBR_APPRENANTS = 80;
+    public static int NBR_APPRENANTS;
 
     public static int DIMENSION_ZONE_GEOGRAPHIQUE = 200;
 
-    public static int NBR_INTERFACES = (int) (NBR_APPRENANTS/4 * 1.2);
-    public static int NBR_FORMATIONS = NBR_APPRENANTS;
+    public static int NBR_INTERFACES;
+    public static int NBR_FORMATIONS;
 
     public static int NBR_CENTRES_FORMATION = 5;
     public static int NBR_SPECIALITES = NBR_CENTRES_FORMATION;
 
-    private static final Interface[] interfaceArray = new Interface[NBR_INTERFACES];
-    private static final Center[] centerArray = new Center[NBR_CENTRES_FORMATION + 1];
-    private static final Formation[] formationArray = new Formation[NBR_FORMATIONS];
+    private static Interface[] interfaceArray;
+    private static  Center[] centerArray;
+    private static Formation[] formationArray;
 
     private final Random rand;
 
-    public Generator() {
+
+    public Generator(int nbApprenants) {
+        NBR_APPRENANTS = nbApprenants;
+        NBR_INTERFACES = (int) (NBR_APPRENANTS/4 * 1.2);
+        NBR_FORMATIONS = NBR_APPRENANTS;
+        interfaceArray = new Interface[NBR_INTERFACES];
+        centerArray = new Center[NBR_CENTRES_FORMATION + 1];
+        formationArray = new Formation[NBR_FORMATIONS];
+
         rand = new Random();
         generateInterfaces();
         generateCenters();
@@ -138,6 +147,21 @@ public class Generator {
 
         Arrays.sort(formationArray, new SortByDay());
         Arrays.sort(formationArray, new SortByHour());
+    }
+
+    public void printInstance(){
+        System.out.println("\nFormations : " + getFormationArray().length + "\n");
+        for(int i = 0;i<getFormationArray().length;i++){ System.out.println(getFormationArray()[i]); }
+
+        System.out.println("\nInterfaces : " + getInterfaceArray().length + "\n");
+        for(int i = 0;i<getInterfaceArray().length;i++){ System.out.println(getInterfaceArray()[i]); }
+
+        System.out.println("\nCentres : " + getCenterArray().length + "\n");
+        for(int i = 0;i<getCenterArray().length;i++){System.out.println(getCenterArray()[i]); }
+
+        System.out.println("\nCentres : " + getCenterArray().length + "\n");
+        for(int i = 0;i<getCenterArray().length;i++){System.out.println(getCenterArray()[i]); }
+
     }
 
 }
