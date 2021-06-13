@@ -18,6 +18,7 @@ public class Main {
         if(args.length > 1) showDetails = Boolean.parseBoolean(args[1]);
 
         System.out.println("############ TABU SEARCH EXAMPLE ############");
+        System.out.println("Nombre d'apprenants : "+ nbApprenants);
 
         Generator instance = new Generator(nbApprenants);
         if(showDetails){
