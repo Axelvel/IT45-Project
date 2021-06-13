@@ -38,7 +38,7 @@ public class Main {
         testSol.printAssignation();
         testCopie.printAssignation();
 */      //testSol.showSolutionStats();
-        testSol = testSearch.tabuSearch(testSol, 10);
+        testSol = testSearch.tabuSearch(testSol, 3);
         //testSol.showSolutionStats();
 
         //testSol.printAssignation();

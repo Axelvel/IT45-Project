@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //TODO : clean code
 
@@ -14,6 +15,8 @@ public class Tabu {
     private Solution bestSolution;
     private List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
     private int tabuLength;
+    static volatile boolean stop = false;
+
 
     public Tabu(int tabuLength) {
         if (tabuLength > 0) {
@@ -26,53 +29,92 @@ public class Tabu {
     public  Solution tabuSearch(Solution sol, long t) {
 
         //Nombre de changements de la bestSolution
-        int nbSwitchs = 0;
+        AtomicInteger nbSwitchs = new AtomicInteger();
 
         if (tabuList != null) tabuList.clear();
-
         bestSolution = new Solution(sol);
         Solution currentSol = new Solution(sol);
 
-        System.out.println("\nInitial sol = " + sol.evalSolution());
 
 
-        for (int n = 0; n < 10000; n++) {
-            System.out.println("\nIteration "+ n);
 
-            double[][] matrix = computeMatrix(currentSol);
 
-            Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+        AtomicInteger n = new AtomicInteger();
+        Runnable runnable =
+                () -> {
 
-            if (optimalMove.x == null || optimalMove.y == null) {
 
-                //Aspiration critera
-                optimalMove.x = tabuList.get(0).x;
-                optimalMove.y = tabuList.get(0).y;
-                double min = matrix[optimalMove.x][optimalMove.y];
+            while(true) {
+                System.out.flush();
 
-                for (int i =1; i < tabuList.size(); i++) {
-                    if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
-                        optimalMove.x = tabuList.get(i).x;
-                        optimalMove.y = tabuList.get(i).y;
+
+                //System.out.println("\nInitial sol = " + sol.evalSolution());
+
+
+                //System.out.println("\nIteration "+ n);
+                //System.out.flush();
+
+                //System.out.println("Thread is running");
+                double[][] matrix = computeMatrix(currentSol);
+
+                Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+
+                if (optimalMove.x == null || optimalMove.y == null) {
+
+                    //Aspiration critera
+                    optimalMove.x = tabuList.get(0).x;
+                    optimalMove.y = tabuList.get(0).y;
+                    double min = matrix[optimalMove.x][optimalMove.y];
+
+                    for (int i =1; i < tabuList.size(); i++) {
+                        if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
+                            optimalMove.x = tabuList.get(i).x;
+                            optimalMove.y = tabuList.get(i).y;
+                        }
                     }
                 }
+                currentSol.setAssignation(optimalMove.x, optimalMove.y);
+                /*
+                System.out.println("Current solution eval : " + currentSol.evalSolution());
+                System.out.flush();
+                System.out.println("Best solution eval : " + bestSolution.evalSolution());
+                System.out.flush();
+
+                 */
+
+
+                if (currentSol.evalSolution() < bestSolution.evalSolution()) {
+                    //System.out.println("\n================== SWITCH ===================\n");
+                    nbSwitchs.getAndIncrement();
+                    bestSolution = new Solution(currentSol);
+                }
+                n.getAndIncrement();
             }
-            currentSol.setAssignation(optimalMove.x, optimalMove.y);
-
-            System.out.println("Current solution eval : " + currentSol.evalSolution());
-            System.out.println("Best solution eval : " + bestSolution.evalSolution());
 
 
-            if (currentSol.evalSolution() < bestSolution.evalSolution()) {
-                System.out.println("\n================== SWITCH ===================\n");
-                nbSwitchs++;
-                bestSolution = new Solution(currentSol);
-            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        long startingTime = System.currentTimeMillis();
+
+        System.out.println("lul");
+        stop = true;
+
+
+        while (System.currentTimeMillis() - startingTime < t * 1000) {
+            System.out.println(System.currentTimeMillis() - startingTime);
         }
+
+        //Kill the Thread
+        thread.interrupt();
 
         System.out.println("\n***** Done *****\n");
 
-        System.out.println("Nombre de changements de bestSolution: = " + nbSwitchs + "\n");
+        System.out.println("Nombre d'itérations: " + n.get());
+
+        System.out.println("Nombre de changements de bestSolution: " + nbSwitchs + "\n");
 
         bestSolution.showSolutionDetails();
 
