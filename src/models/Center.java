@@ -1,3 +1,6 @@
+package models;
+import utils.*;
+
 /**
  * Class representing a formation center
  * Each center is specialized in one skill

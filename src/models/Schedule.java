@@ -1,4 +1,7 @@
+package models;
+import tabu.*;
 import java.util.List;
+
 
 /**
  * This class demonstrates a schedule by a list of formation
@@ -7,8 +10,8 @@ import java.util.List;
  */
 public class Schedule {
     public List<Formation> schedule;
-    private Interface i;
-    private Solution currentSolution;
+    private final Interface i;
+    private final Solution currentSolution;
 
     public Schedule(Interface i, Solution currentSol){
         this.i = i;
@@ -56,13 +59,10 @@ public class Schedule {
         int day = f.getDay().getId();
         for(Formation formation: schedule){
             if(formation.getDay().getId() == day){
-                if(f.getEndHour() <= formation.getStartHour()){
-                    return false;
-                }
+                if(f.getEndHour() <= formation.getStartHour())return false;
             }
         }
         return true;
-
     }
 
 
@@ -119,11 +119,11 @@ public class Schedule {
         return true;
     }
 
-
     public String toString(){
         String str = "Interface "+i.getId()+":";
-        for(int j = 0; j<schedule.size();j++){
-            str += "\n" + schedule.get(j).getDay() + " : F"+ schedule.get(j).getId()+ "["+schedule.get(j).getStartHour()+"h-"+schedule.get(j).getEndHour()+"h]";
+        for (Formation formation : schedule) {
+            str += "\n" + formation.getDay() + " : F" + formation.getId() + "[" +
+                    formation.getStartHour() + "h-" + formation.getEndHour() + "h]";
         }
         return str;
     }

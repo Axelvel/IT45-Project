@@ -1,3 +1,6 @@
+package models;
+import utils.*;
+
 /**
  * Class representing a formation
  * Each formation has a speciality, a skill, a day,
@@ -21,16 +24,14 @@ public class Formation {
         this.end = end;
     }
 
-
-    public String toString(){
-        return "F"+id+" : " + day + " -> " + start + "h-" + end + "h";
-    }
-
     public int getId() { return id; }
     public Speciality getSpeciality(){ return speciality; }
     public int getSkill(){ return skill; }
     public Day getDay(){ return day; }
     public int getStartHour(){ return start; }
     public int getEndHour(){ return end; }
+    public String toString(){
+        return "F"+id+" : " + day + " -> " + start + "h-" + end + "h";
+    }
 
 }

@@ -1,4 +1,6 @@
-import java.text.DecimalFormat;
+package utils;
+
+import models.*;
 
 /**
  * Class containing multiple utils methods and classes
@@ -37,21 +39,6 @@ public final class Utils {
         int y2 = cb.getCoord().y;
 
         return Math.sqrt(Math.pow(Math.abs(x1 - x2), 2)+ Math.pow(Math.abs(y1 - y2), 2));
-    }
-
-    /**
-     * Print a two-dimensional array
-     * @param M : two-dimensional array
-     */
-    public static void printMatrix(double [][] M) {
-        DecimalFormat df = new DecimalFormat("###.##");
-        for(int i = 0; i < M.length; i++) {
-            System.out.print(i + " : ");
-            for(int j = 0; j < M[i].length; j++) {
-                System.out.print(df.format(M[i][j]) + " | ");
-            }
-            System.out.println();
-        }
     }
 
     /**

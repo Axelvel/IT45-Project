@@ -1,101 +1,106 @@
-
+package tabu;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-//TODO : clean code
-//TODO : timer
+import java.util.concurrent.atomic.AtomicInteger;
+import models.*;
+import utils.*;
 
 /**
  * Implement the tabu class, used to resolve our optimization problem
- * TODO : more explanations
+ * It holds the best solution, the tabu list and the tabu length
  */
 public class Tabu {
 
     private Solution bestSolution;
-    private List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
+    private final List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
     private int tabuLength;
 
     public Tabu(int tabuLength) {
         if (tabuLength > 0) {
             this.tabuLength = tabuLength;
         } else {
-            System.out.println("tabuLength needs to be > 0");
+            System.out.println("Tabu list's length needs to be > 0");
         }
     }
 
     /**
      * Starts a tabu search to optimize a solution
      * @param sol : initial solution
-     * @param t : length of the tabu list //TODO: check
+     * @param t : length of the tabu list
      * @param showDetails : if set to true, print details of the search
      * @return an optimized solution
      */
-    public Solution tabuSearch(Solution sol, long t, boolean showDetails) throws IOException {
+    public Solution tabuSearch(Solution sol, long t, boolean showDetails) throws IOException, InterruptedException {
+        //Number of time the best solution will be switched
+        AtomicInteger nbSwitchs = new AtomicInteger();
 
-        //Nombre de changements de la bestSolution
-        int nbSwitchs = 0;
-
-        if (tabuList != null) tabuList.clear();
+        tabuList.clear();
 
         bestSolution = new Solution(sol);
         Solution currentSol = new Solution(sol);
 
         if(showDetails) System.out.println("\nInitial solution = " + sol.evalSolution());
 
-        for (int n = 0; n < 10000; n++) {
-            if(showDetails) System.out.println("\nIteration n°"+ n);
+        AtomicInteger n = new AtomicInteger();
+        Runnable runnable =
+                () -> {
+                    while(true) {
+                        double[][] matrix = computeMatrix(currentSol);
 
-            double[][] matrix = computeMatrix(currentSol);
+                        Utils.Pair<Integer, Integer> optimalMove = getMinimum(matrix);
 
-            Utils.Pair<Integer, Integer> optimalMove =  getMinimum(matrix);
+                        if (optimalMove.x == null || optimalMove.y == null) {
 
-            if (optimalMove.x == null || optimalMove.y == null) {
+                            //Aspiration critera
+                            optimalMove.x = tabuList.get(0).x;
+                            optimalMove.y = tabuList.get(0).y;
+                            double min = matrix[optimalMove.x][optimalMove.y];
 
-                //Aspiration critera
-                optimalMove.x = tabuList.get(0).x;
-                optimalMove.y = tabuList.get(0).y;
-                double min = matrix[optimalMove.x][optimalMove.y];
+                            for (int i = 1; i < tabuList.size(); i++) {
+                                if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
+                                    optimalMove.x = tabuList.get(i).x;
+                                    optimalMove.y = tabuList.get(i).y;
+                                }
+                            }
+                        }
 
-                for (int i =1; i < tabuList.size(); i++) {
-                    if (matrix[tabuList.get(i).x][tabuList.get(i).y] < min) {
-                        optimalMove.x = tabuList.get(i).x;
-                        optimalMove.y = tabuList.get(i).y;
+                        currentSol.setAssignation(optimalMove.x, optimalMove.y);
+
+                        if (currentSol.evalSolution() < bestSolution.evalSolution()) {
+                            nbSwitchs.getAndIncrement();
+                            bestSolution = new Solution(currentSol);
+                        }
+                        n.getAndIncrement();
                     }
-                }
-            }
-            currentSol.setAssignation(optimalMove.x, optimalMove.y);
+                };
 
-            if(showDetails) System.out.println("Current solution evaluation : " + currentSol.evalSolution());
-            if(showDetails) System.out.println("Best solution evaluation : " + bestSolution.evalSolution());
+        Thread thread = new Thread(runnable);
+        thread.start();
 
-
-            if (currentSol.evalSolution() < bestSolution.evalSolution()) {
-                if(showDetails) System.out.println("\n================== SWITCH ===================\n");
-                nbSwitchs++;
-                bestSolution = new Solution(currentSol);
-            }
-        }
+        thread.join(t*1000);
+        thread.interrupt();
 
         System.out.println("\n############ SEARCH DONE ############\n");
 
-        if(showDetails) System.out.println("Number of best solution switches: = " + nbSwitchs + "\n");
+        System.out.println("Number of best solution switches: = " + nbSwitchs + "\n");
+        System.out.println("Number of iteration = " + n);
         System.out.println("Initial solution evaluation = " + sol.evalSolution());
         System.out.println("Best solution evaluation = " + bestSolution.evalSolution());
 
         bestSolution.showSolutionDetails();
-        //bestSolution.exportSolution();
+        bestSolution.exportSolution(t,sol.evalSolution());
         return bestSolution;
     }
 
 
 
     /**
-     * Heuristic method, TODO : more explanations flemme
-     * @param dist
-     * @param spe
-     * @return
+     * Heuristic method, that gives a value to a certain movement in the matrix
+     * @param dist : distance ran by the interface if they make this movement
+     * @param spe : 1 if the interface has the right speciality, 0 if not
+     * @return dist * coeff
      */
     public double heuristic(double dist, boolean spe) {
         double coefficient;
@@ -164,7 +169,7 @@ public class Tabu {
 
     /**
      * Add a movement to the tabu list
-     * @param i : TODO : ?
+     * @param i : movement id
      */
 
     public void addToTabuList(Utils.Pair<Integer, Integer> i) {
@@ -204,7 +209,7 @@ public class Tabu {
     /**
      * Gets the minimal value of a given matrix (if the movement is not tabu)
      * Adds the optimal movement to the tabuList
-     * @param matrix
+     * @param matrix : computed matrix of values
      * @return the coordinates of the minimum value
      */
     public Utils.Pair<Integer, Integer> getMinimum(double[][] matrix) {
@@ -231,8 +236,8 @@ public class Tabu {
 
     //TODO : add comments
     public boolean isTabu(Utils.Pair<Integer, Integer> element) {
-        for (int n = 0; n < tabuList.size(); n++) {
-            if (tabuList.get(n).x == element.x && tabuList.get(n).y == element.y) {
+        for (Utils.Pair<Integer, Integer> integerIntegerPair : tabuList) {
+            if (integerIntegerPair.x.equals(element.x) && integerIntegerPair.y.equals(element.y)) {
                 return true;
             }
         }

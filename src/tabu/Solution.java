@@ -1,3 +1,5 @@
+package tabu;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -5,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//TODO : clean code
+import models.*;
+import utils.*;
 
 /**
  * Class representing a solution to the problem
@@ -16,7 +19,7 @@ import java.util.List;
  */
 public class Solution {
 
-    private int[] assignation;
+    private final int[] assignation;
 
     public Solution(){
         this.assignation = new int[Generator.NBR_FORMATIONS];
@@ -43,22 +46,6 @@ public class Solution {
     public void setAssignation(int f, int i){ assignation[f] = i; }
 
     /**
-     * Check if a solution is valid
-     * @return true if valid, false if not
-     */
-    public boolean isValid(){
-        //check if all formations have been assigned
-        if(Utils.contains(assignation,-1)) return false;
-
-        //check if all schedules are valid
-        for(Interface i: Generator.getInterfaceArray()){
-            Schedule s = new Schedule(i, this);
-            if(!s.isScheduleValid()) return false;
-        }
-        return true;
-    }
-
-    /**
      * Checks if the interface assigned to the formation has the right skill
      * @param f : formation id
      */
@@ -66,11 +53,7 @@ public class Solution {
         int id = this.getAssignation(f);
         int skill = Generator.getFormationArray()[f].getSkill();
 
-        if (Generator.getInterfaceArray()[id].getSkill() == skill || Generator.getInterfaceArray()[id].getSkill() == 2 ) {
-            return true;
-        } else {
-            return false;
-        }
+        return(Generator.getInterfaceArray()[id].getSkill() == skill || Generator.getInterfaceArray()[id].getSkill() == 2);
     }
 
     /**
@@ -101,7 +84,7 @@ public class Solution {
     }
 
 
-    /** //TODO : replace with schedule class
+    /**
      * Creates the schedule of an interface
      * @param i : interface id
      */
@@ -157,7 +140,7 @@ public class Solution {
     }
 
     /**
-     * Test function used to see the details of a solution, including the
+     * Function used to see the details of a solution, including the
      * list of interfaces that aren't assigned to any formations, an
      * evaluation of the solution, and examples of schedules of a few interfaces
      * and their work time
@@ -187,10 +170,12 @@ public class Solution {
 
     }
 
+    /**
+     * Show that solutions stats, like the number of valid skills and the number of valid specialities
+     */
     public void showSolutionStats(){
-        int nbSpecialityValid = 0;
         int nbSkillValid = 0;
-
+        int nbSpecialityValid = 0;
         for(Formation f: Generator.getFormationArray()){
             if(isSkillValid(f.getId())){nbSkillValid++;}
             if(isSpecialtyValid(f.getId())){nbSpecialityValid++;}
@@ -199,6 +184,17 @@ public class Solution {
         System.out.println("Number of valid skills : "+nbSkillValid+"/"+Generator.NBR_FORMATIONS);
         System.out.println("Number of valid specialities : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
     }
+
+    /**
+     * Return the number of valid specialities
+     * @return nb
+     */
+    public int getNbSpecialityValid(){
+        int nbSpecialityValid = 0;
+        for(Formation f: Generator.getFormationArray()) if(isSpecialtyValid(f.getId())){nbSpecialityValid++;}
+        return nbSpecialityValid;
+    }
+
 
     /**
      * Print the content of the assignation array
@@ -211,17 +207,25 @@ public class Solution {
         return rslt;
     }
 
-    public void exportSolution() throws IOException {
+    /**
+     * Write a solution in a text file
+     * @param time : maximum time set for the search
+     * @param initEval : value of the initial solution
+     * @throws IOException
+     */
+    public void exportSolution(long time, double initEval) throws IOException {
         File resultFile = new File("results.txt");
         resultFile.createNewFile();
 
-        FileWriter myWriter = new FileWriter("results.txt",true);
-        String content = "##### NEW SOLUTION INSTANCE #####";
+        FileWriter myWriter = new FileWriter("src/results.txt",true);
+        String content = "##### NEW INSTANCE #####";
+        content += "\nTemps d'éxécution: " + (time) + "s";
         content += "\nNombre d'apprenants : " + Generator.NBR_APPRENANTS;
-        content += "\nEvaluation de la solution : " + evalSolution();
-        content += "\nTemps d'éxécution : " + evalSolution();
-        content += "\nNombre de spécialités valides : " + evalSolution() + "/" + Generator.NBR_FORMATIONS;
-        myWriter.write("test!");
+        content += "\nEvaluation de la solution initiale : " + initEval;
+        content += "\nEvaluation de la meilleure solution : " + evalSolution();
+        content += "\nAmélioration : " +( initEval - evalSolution());
+        content += "\nNombre de spécialités valides : " + getNbSpecialityValid() + "/" + Generator.NBR_FORMATIONS + "\n\n";
+        myWriter.write(content);
         myWriter.close();
     }
 

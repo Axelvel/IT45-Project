@@ -1,7 +1,8 @@
-
+package tabu;
 import java.util.*;
+import models.*;
+import utils.*;
 
-//TODO : re-add distance matrix
 /**
  * Generator class used to create an instance of a problem
  */
@@ -43,16 +44,23 @@ public class Generator {
     public static Formation[] getFormationArray(){return formationArray;}
     public static Center getCenterBySpeciality(int i){return centerArray[i];}
 
+    /**
+     * Fill the interface array with randomly generated interfaces
+     */
     private void generateInterfaces() {
         for (int i = 0; i < NBR_INTERFACES; i++) {
             interfaceArray[i] = new Interface(i,generateCompetence(), generateSpecialities());
         }
     }
 
+    /**
+     * Generate a random competence between sign language (0) and lpc coding (1), or both (2)
+     * @return competence id
+     */
     private int generateCompetence() {
         double random = rand.nextDouble();
         if (random < 0.1) {
-            return 2; //Les 2
+            return 2; //Both
         } else if (random < 0.55) {
             return 0; //Competence 1
         }  else {
@@ -60,8 +68,11 @@ public class Generator {
         }
     }
 
+    /**
+     * Generate a random list of specialities
+     * @return specialities list
+     */
     private List<Speciality> generateSpecialities() {
-
         List<Speciality> list = new ArrayList<>();
 
         for (int i = 0; i < NBR_SPECIALITES; i++) {
@@ -72,12 +83,13 @@ public class Generator {
         return list;
     }
 
-
+    /**
+     * Fill the center array with centers with randomly generated coordinates
+     */
     private void generateCenters() {
 
         for (int i = 0; i <= NBR_CENTRES_FORMATION; i++) {
-
-            //Generate coord
+            //Generate coordinates
             int x = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
             int y = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
             Utils.Pair coord = new Utils.Pair(x,y);
@@ -93,15 +105,17 @@ public class Generator {
         }
     }
 
+    /**
+     * Fill the formation array with randomly generates formations, then sort them
+     * in chronological order
+     */
     private void generateFormations() {
-
         for (int i = 0; i < NBR_FORMATIONS; i++) {
 
             int random;
 
-            Speciality speciality = Speciality.valueOfId(rand.nextInt(NBR_SPECIALITES));
-
             int competence = rand.nextInt(2);
+            Speciality speciality = Speciality.valueOfId(rand.nextInt(NBR_SPECIALITES));
 
             random = rand.nextInt(6);
             Day day = Day.valueOfId(random);
@@ -125,7 +139,7 @@ public class Generator {
     /**
      * Function used to sort the formations array according
      * to day and start day
-     * Used two comparators in order to user
+     * Used two comparators in order to use
      * the Arrays.sort() method
      */
     public void sortFormations(){
@@ -149,6 +163,9 @@ public class Generator {
         Arrays.sort(formationArray, new SortByHour());
     }
 
+    /**
+     * Print a generator instance
+     */
     public void printInstance(){
         System.out.println("\nFormations : " + getFormationArray().length + "\n");
         for(int i = 0;i<getFormationArray().length;i++){ System.out.println(getFormationArray()[i]); }
