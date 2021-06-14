@@ -1,24 +1,8 @@
 ##### NEW INSTANCE #####
 Temps d'éxécution: 10s
 Nombre d'apprenants : 80
-Evaluation de la solution initiale : 3696.41498166583
-Evaluation de la meilleure solution : 2663.922087697047
-Amélioration : 1032.492893968783
-Nombre de spécialités valides : 26/80
-
-##### NEW INSTANCE #####
-Temps d'éxécution: 10s
-Nombre d'apprenants : 80
-Evaluation de la solution initiale : 4403.399279619986
-Evaluation de la meilleure solution : 3247.813555375922
-Amélioration : 1155.5857242440643
-Nombre de spécialités valides : 21/80
-
-##### NEW INSTANCE #####
-Temps d'éxécution: 10s
-Nombre d'apprenants : 80
-Evaluation de la solution initiale : 2947.3117536373475
-Evaluation de la meilleure solution : 2333.4145573726114
-Amélioration : 613.8971962647361
-Nombre de spécialités valides : 30/80
+Evaluation de la solution initiale : 4934.739192962455
+Evaluation de la meilleure solution : 3968.8795300766837
+Amélioration : 965.8596628857708
+Nombre de spécialités valides : 18/80
 

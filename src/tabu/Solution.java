@@ -163,17 +163,16 @@ public class Solution {
             }
         }
 
-        //give the eval of a solution
-        System.out.println("\nValue of the solution :" + evalSolution());
-        System.out.println("\nStatistics :");
-        showSolutionStats();
-
     }
 
     /**
      * Show that solutions stats, like the number of valid skills and the number of valid specialities
      */
-    public void showSolutionStats(){
+    public void showSolutionStats(long time, double initEval){
+        System.out.println("\n-> Statistics :");
+        System.out.println("\nExecution time: " + (time) + "s"+ "\nInitial solution value : " + initEval +
+                "\nBest solution value : " + evalSolution() + "\nAmelioration : " +( initEval - evalSolution()));
+
         int nbSkillValid = 0;
         int nbSpecialityValid = 0;
         for(Formation f: Generator.getFormationArray()){
@@ -183,6 +182,7 @@ public class Solution {
 
         System.out.println("Number of valid skills : "+nbSkillValid+"/"+Generator.NBR_FORMATIONS);
         System.out.println("Number of valid specialities : "+nbSpecialityValid+"/"+Generator.NBR_FORMATIONS);
+
     }
 
     /**
@@ -215,9 +215,13 @@ public class Solution {
      */
     public void exportSolution(long time, double initEval) throws IOException {
         File resultFile = new File("results.txt");
-        resultFile.createNewFile();
+        if(!resultFile.exists()){
+            resultFile.createNewFile();
+            resultFile.setWritable(true);
+            resultFile.setReadable(true);
+        }
 
-        FileWriter myWriter = new FileWriter("src/results.txt",true);
+        FileWriter myWriter = new FileWriter("results.txt",true);
         String content = "##### NEW INSTANCE #####";
         content += "\nTemps d'éxécution: " + (time) + "s";
         content += "\nNombre d'apprenants : " + Generator.NBR_APPRENANTS;
@@ -227,6 +231,7 @@ public class Solution {
         content += "\nNombre de spécialités valides : " + getNbSpecialityValid() + "/" + Generator.NBR_FORMATIONS + "\n\n";
         myWriter.write(content);
         myWriter.close();
+
     }
 
 }

@@ -92,7 +92,7 @@ public class Generator {
             //Generate coordinates
             int x = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
             int y = (int) (rand.nextDouble() * DIMENSION_ZONE_GEOGRAPHIQUE);
-            Utils.Pair coord = new Utils.Pair(x,y);
+            Pair<Integer, Integer> coord = new Pair<>(x,y);
 
             Speciality speciality;
 

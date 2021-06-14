@@ -14,7 +14,7 @@ import utils.*;
 public class Tabu {
 
     private Solution bestSolution;
-    private final List<Utils.Pair<Integer, Integer>> tabuList = new ArrayList<>();
+    private final List<Pair<Integer, Integer>> tabuList = new ArrayList<>();
     private int tabuLength;
 
     public Tabu(int tabuLength) {
@@ -49,7 +49,7 @@ public class Tabu {
                     while(true) {
                         double[][] matrix = computeMatrix(currentSol);
 
-                        Utils.Pair<Integer, Integer> optimalMove = getMinimum(matrix);
+                        Pair<Integer, Integer> optimalMove = getMinimum(matrix);
 
                         if (optimalMove.x == null || optimalMove.y == null) {
 
@@ -90,7 +90,7 @@ public class Tabu {
         System.out.println("Best solution evaluation = " + bestSolution.evalSolution());
 
         bestSolution.showSolutionDetails();
-        bestSolution.exportSolution(t,sol.evalSolution());
+        bestSolution.showSolutionStats(t, currentSol.evalSolution());
         return bestSolution;
     }
 
@@ -172,7 +172,7 @@ public class Tabu {
      * @param i : movement id
      */
 
-    public void addToTabuList(Utils.Pair<Integer, Integer> i) {
+    public void addToTabuList(Pair<Integer, Integer> i) {
         tabuList.add(i);
         if (tabuList.size() >= tabuLength) tabuList.remove(0);
     }
@@ -212,16 +212,16 @@ public class Tabu {
      * @param matrix : computed matrix of values
      * @return the coordinates of the minimum value
      */
-    public Utils.Pair<Integer, Integer> getMinimum(double[][] matrix) {
+    public Pair<Integer, Integer> getMinimum(double[][] matrix) {
 
         double minValue = Double.POSITIVE_INFINITY;
-        Utils.Pair<Integer, Integer> minimum = new Utils.Pair();
+        Pair<Integer, Integer> minimum = new Pair<>(null,null);
 
 
         for (int i = 0; i < Generator.NBR_FORMATIONS; i++) {
             for (int j = 0; j < Generator.NBR_INTERFACES; j++) {
                 if (matrix[i][j] < minValue) {
-                    if (!isTabu(new Utils.Pair<>(i, j))) {
+                    if (!isTabu(new Pair<>(i, j))) {
                         minValue = matrix[i][j];
                         minimum.x = i;
                         minimum.y = j;
@@ -234,9 +234,13 @@ public class Tabu {
         return minimum;
     }
 
-    //TODO : add comments
-    public boolean isTabu(Utils.Pair<Integer, Integer> element) {
-        for (Utils.Pair<Integer, Integer> integerIntegerPair : tabuList) {
+    /**
+     * Checks if the movement is already in the tabu list
+     * @param element : element of the tabu list
+     * @return true if the movement is tabu, false if not
+     */
+    public boolean isTabu(Pair<Integer, Integer> element) {
+        for (Pair<Integer, Integer> integerIntegerPair : tabuList) {
             if (integerIntegerPair.x.equals(element.x) && integerIntegerPair.y.equals(element.y)) {
                 return true;
             }

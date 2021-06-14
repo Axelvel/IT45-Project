@@ -1,3 +1,4 @@
+package start;
 
 import java.io.IOException;
 import tabu.*;
