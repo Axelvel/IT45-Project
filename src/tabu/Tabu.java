@@ -234,7 +234,11 @@ public class Tabu {
         return minimum;
     }
 
-    //TODO : add comments
+    /**
+     * Checks if the movement is already in the tabu list
+     * @param element : element of the tabu list
+     * @return true if the movement is tabu, false if not
+     */
     public boolean isTabu(Utils.Pair<Integer, Integer> element) {
         for (Utils.Pair<Integer, Integer> integerIntegerPair : tabuList) {
             if (integerIntegerPair.x.equals(element.x) && integerIntegerPair.y.equals(element.y)) {
