@@ -107,7 +107,7 @@ public class Tabu {
         if (spe) {
             coefficient = 1;
         } else {
-            coefficient = 2; //TODO: Find right coefficient
+            coefficient = 2;
         }
         return coefficient * dist;
     }
